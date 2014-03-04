@@ -1,5 +1,5 @@
-//import java.io.*;
-//import java.sql.*;
+import java.io.*;
+import java.sql.*;
 
 public class database {
 
