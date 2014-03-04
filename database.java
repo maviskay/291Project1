@@ -12,8 +12,8 @@ public class database {
 
 		System.out.println("CMPUT 291 Project 1");
 
-		//if (argv.length != 2)
-		//	System.out.println("Enter oracle username followed by password");
+		if (argv.length != 2)
+			System.out.println("Enter oracle username followed by password");
 
 		/*try {
 			Class.forName(driver);
