@@ -1,6 +1,8 @@
 import java.sql.*;
 import java.util.Scanner;
 
+// export CLASSPATH=$CLASSPATH\:.\:/oracle/jdbc/lib/classes12.zip
+
 public class database {
 	static Connection conn = null;
 
@@ -79,7 +81,23 @@ public class database {
 
 	// Registers new vehicle to database
 	private static void vehicleRegistration(){
+		Scanner keyboard;
+		String input;
 		System.out.println("You have selected new vehicle registration");
+		while(true){
+			System.out.print("Please enter the vehicle's serial number: ");
+			keyboard = new Scanner(System.in);
+			input = keyboard.nextLine();
+			if (input.length() != 15)
+				System.out.println("Serial number invalid");
+			else{
+				System.out.print("Please enter make of vehicle: ");
+				input = keyboard.nextLine();
+				if (input.length() > 20)
+					System.out.println("Make of vehicle invalid");
+			}
+			
+		}
 	}
 	
 	// Complete an auto transaction in database
