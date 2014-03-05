@@ -118,15 +118,34 @@ public class database {
 		    keyboard = new Scanner(System.in);
 		    model = keyboard.nextLine();
 		    if (model.length() > 20)
-			System.out.println("Model of vehicle invalid");
+				System.out.println("Model of vehicle invalid");
 		    else
-			break;
+				break;
 		}
 		while (true) {
 		    System.out.print("Please enter year of vehicle: ");
 		    keyboard = new Scanner(System.in);
-		    year = keyboard.nextInt();
+			try{
+			    year = keyboard.nextInt();
+				if (Integer.toString(year).length() != 4)
+					System.out.println("Year of vehicle invalid");
+				else
+					break;
+			} catch (InputMismatchException e) {
+			    System.out.println("Invalid year");
+			    continue;
+			}
 		}
+		while (true) {
+			System.out.print("Please enter color of vehicle: ");
+			keyboard = new Scanner(System.in);
+		    color = keyboard.nextLine();
+		    if (color.length() > 10)
+				System.out.println("Color of vehicle invalid");
+		    else
+				break;
+		}
+		// Assume all vehicle types are already in database
 	}
 	
 	// Complete an auto transaction in database
