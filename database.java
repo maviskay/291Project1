@@ -12,15 +12,18 @@ public class database {
 		String database ="jdbc:oracle:thin:@gwynne.cs.ualberta.ca:1521:CRS";
 		String username;
 		String password;
+		char[] pass;
 
 		// Obtains database username and password
-		if (argv.length != 2){
-			System.out.println("Enter oracle username and password");
+		if (argv.length != 1){
+			System.out.println("Enter oracle username");
 			System.exit(0);
 		}
 		username = argv[0];
-		password = argv[1];
-	
+		Console console = System.console();
+		pass = console.readPassword("Enter your password: ");
+		password = new String(pass);
+
 		// Attempts to connect to Oracle database
 		try {
 			Class.forName(driver);
@@ -44,7 +47,7 @@ public class database {
 		int selection;
 		
 		//Requests selection from user
-		System.out.println("Welcome to the auto registration system");
+		System.out.println("\nWelcome to the auto registration system");
 		while(true){
 			System.out.println("\nPlease select from the following:");
 			System.out.println("\t1: New Vehicle Registration");
@@ -94,7 +97,7 @@ public class database {
 			if (serialNum.length() != 15)
 				System.out.println("Serial number invalid");
 			else
-			    // Check serial num before next input request
+			    // TODO: Check serial num before next input request
 				break;
 		}
 		while (true) {
@@ -142,3 +145,4 @@ public class database {
 		System.out.println("You have selected search engine");
 	}
 }
+
