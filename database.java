@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.Scanner;
+import java.io.Console;
 
 // export CLASSPATH=$CLASSPATH\:.\:/oracle/jdbc/lib/classes12.zip
 
@@ -14,12 +15,12 @@ public class database {
 
 		// Obtains database username and password
 		if (argv.length != 2){
-			System.out.println("Enter oracle username followed by password");
+			System.out.println("Enter oracle username and password");
 			System.exit(0);
 		}
 		username = argv[0];
 		password = argv[1];
-		
+	
 		// Attempts to connect to Oracle database
 		try {
 			Class.forName(driver);
@@ -53,6 +54,7 @@ public class database {
 			System.out.println("\t5: Search Engine");
 			System.out.println("\t6: Exit");
 			keyboard = new Scanner(System.in);
+			// TODO: check if non numeric value is entered
 			selection = keyboard.nextInt();
 			if (selection == 1)
 				vehicleRegistration();
@@ -80,43 +82,63 @@ public class database {
 	}
 
 	// Registers new vehicle to database
-	private static void vehicleRegistration(){
+	private static void vehicleRegistration() {
 		Scanner keyboard;
-		String input;
+		String serialNum, maker, model, color;
+		int year, type;
 		System.out.println("You have selected new vehicle registration");
-		while(true){
-			System.out.print("Please enter the vehicle's serial number: ");
+		while (true) {
+		    System.out.print("Please enter the vehicle's serial number: ");
 			keyboard = new Scanner(System.in);
-			input = keyboard.nextLine();
-			if (input.length() != 15)
+			serialNum = keyboard.nextLine();
+			if (serialNum.length() != 15)
 				System.out.println("Serial number invalid");
-			else{
-				System.out.print("Please enter make of vehicle: ");
-				input = keyboard.nextLine();
-				if (input.length() > 20)
-					System.out.println("Make of vehicle invalid");
-			}
-			
+			else
+			    // Check serial num before next input request
+				break;
+		}
+		while (true) {
+			System.out.print("Please enter make of vehicle: ");
+		        keyboard = new Scanner(System.in);
+			maker = keyboard.nextLine();
+			if (maker.length() > 20)
+				System.out.println("Make of vehicle invalid");
+			else
+			    break;
+		}
+		while (true) {
+		    System.out.print("Please enter model of vehicle: ");
+		    keyboard = new Scanner(System.in);
+		    model = keyboard.nextLine();
+		    if (model.length() > 20)
+			System.out.println("Model of vehicle invalid");
+		    else
+			break;
+		}
+		while (true) {
+		    System.out.print("Please enter year of vehicle: ");
+		    keyboard = new Scanner(System.in);
+		    year = keyboard.nextInt();
 		}
 	}
 	
 	// Complete an auto transaction in database
-	private static void autoTransaction(){
+	private static void autoTransaction() {
 		System.out.println("You have selected auto transaction");
 	}
 	
 	// Registers new driving license to database
-	private static void licenseRegistration(){
+	private static void licenseRegistration() {
 		System.out.println("You have selected driver license registration");
 	}
 	
 	// Issue ticket & record violation in database
-	private static void violationRecord(){
+	private static void violationRecord() {
 		System.out.println("You have selected violation record");
 	}
 	
 	// Searches the database
-	private static void searchEngine(){
+	private static void searchEngine() {
 		System.out.println("You have selected search engine");
 	}
 }
