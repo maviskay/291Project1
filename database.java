@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.io.Console;
 
@@ -44,7 +45,7 @@ public class database {
 	// Requests selection from user & ensures valid request
 	private static void requestAction() {
 		Scanner keyboard;
-		int selection;
+		int selection = -1;
 		
 		//Requests selection from user
 		System.out.println("\nWelcome to the auto registration system");
@@ -57,8 +58,12 @@ public class database {
 			System.out.println("\t5: Search Engine");
 			System.out.println("\t6: Exit");
 			keyboard = new Scanner(System.in);
-			// TODO: check if non numeric value is entered
-			selection = keyboard.nextInt();
+			try{
+			    selection = keyboard.nextInt();
+			} catch (InputMismatchException e) {
+			    System.out.println("Invalid option");
+			    continue;
+			}
 			if (selection == 1)
 				vehicleRegistration();
 			else if (selection == 2)
@@ -70,7 +75,7 @@ public class database {
 			else if (selection == 5)
 				searchEngine();
 			else if (selection == 6){
-				System.out.println("Connection to database will now close.");
+				System.out.println("Connection to database will now close");
 				try {
 					conn.close();
 					System.exit(0);
@@ -81,7 +86,6 @@ public class database {
 			else
 				System.out.println("Selection not valid, please try again");
 		}
-		
 	}
 
 	// Registers new vehicle to database
