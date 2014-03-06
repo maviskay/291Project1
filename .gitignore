@@ -1,2 +1,9 @@
 # Class files
 *.class
+
+# MAC files
+.DS_Store
+
+#Eclipse files
+.classpath
+.project
