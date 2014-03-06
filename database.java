@@ -83,6 +83,7 @@ public class database {
 					System.exit(0);
 				} catch (SQLException e) {
 					System.out.println("Could not close database connection");
+					return;
 				}
 			}
 			else
