@@ -4,6 +4,6 @@
 # MAC files
 .DS_Store
 
-#Eclipse files
+# Eclipse files
 .classpath
 .project
