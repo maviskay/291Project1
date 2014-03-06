@@ -69,13 +69,13 @@ public class database {
 			if (selection == 1)
 				NewVehicle.vehicleRegistration(conn);
 			else if (selection == 2)
-				VehicleTransaction.autoTransaction();
+				VehicleTransaction.autoTransaction(conn);
 			else if (selection == 3)
-				NewLicence.licenceRegistration();
+				NewLicence.licenceRegistration(conn);
 			else if (selection == 4)
-				Violation.violationRecord();
+				Violation.violationRecord(conn);
 			else if (selection == 5)
-				Search.searchEngine();
+				Search.searchEngine(conn);
 			else if (selection == 6){
 				System.out.println("Connection to database will now close");
 				try {

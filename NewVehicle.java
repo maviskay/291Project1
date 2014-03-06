@@ -26,9 +26,10 @@ public class NewVehicle{
 					checkSerial.setString(1, serialNum);
 					serialCount = checkSerial.executeQuery();
 					serialCount.next();
-					if (serialCount.getInt(1) != 0)					
+					if (serialCount.getInt(1) != 0){					
+						serialCount.close();
 						System.out.println("Vehicle already exists");
-					else
+					} else
 						break;
 				} catch (SQLException e){
 					System.out.println(e.getMessage());
