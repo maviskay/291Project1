@@ -46,7 +46,7 @@ public class database {
 	private static void requestAction() {
 		Scanner keyboard;
 		int selection = -1;
-		
+
 		System.out.println("\nWelcome to the auto registration system");
 		while(true){
 			System.out.println("\nPlease select from the following:");
@@ -65,10 +65,9 @@ public class database {
 			    System.out.println("Invalid option");
 			    continue;
 			}
-			
 			// Searches for user's selection
 			if (selection == 1)
-				NewVehicle.vehicleRegistration();
+				NewVehicle.vehicleRegistration(conn);
 			else if (selection == 2)
 				VehicleTransaction.autoTransaction();
 			else if (selection == 3)

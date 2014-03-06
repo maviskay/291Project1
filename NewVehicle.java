@@ -1,13 +1,18 @@
+import java.sql.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
-public class NewVehicle {
+public class NewVehicle{
 
-	public static void vehicleRegistration() {
+	public static void vehicleRegistration(Connection dbConn) {
+		PreparedStatement checkSerial;
+		ResultSet serialCount;
 		Scanner keyboard;
 		String serialNum, maker, model, color;
+		String serial = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
 		int year, type;
+
 		System.out.println("You have selected new vehicle registration");
 		while (true) {
 		    System.out.print("Please enter the vehicle's serial number: ");
@@ -15,9 +20,20 @@ public class NewVehicle {
 			serialNum = keyboard.nextLine();
 			if (serialNum.length() != 15)
 				System.out.println("Serial number invalid");
-			else
-			    // TODO: Check serial num before next input request
-				break;
+			else{
+				try{
+					checkSerial = dbConn.prepareStatement(serial);
+					checkSerial.setString(1, serialNum);
+					serialCount = checkSerial.executeQuery();
+					serialCount.next();
+					if (serialCount.getInt(1) != 0)					
+						System.out.println("Vehicle already exists");
+					else
+						break;
+				} catch (SQLException e){
+					System.out.println(e.getMessage());
+				}
+			}
 		}
 		while (true) {
 			System.out.print("Please enter make of vehicle: ");
