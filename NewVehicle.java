@@ -108,15 +108,15 @@ public class NewVehicle{
 		if (type.length() > 10)
 			return -1;
 		else{
+			type += "       ";
 			try{
 				// Assume all vehicle types are already in database
 				findType = dbConn.prepareStatement(query);
-				System.out.println("type: " + type);
 				findType.setString(1, type);
 				typeResult = findType.executeQuery();
 				while(typeResult.next()){
 					int test = typeResult.getInt("type_id");
-					System.out.println(test);
+					System.out.println("Hello" + test);
 				}
 				typeResult.close();
 			} catch (SQLException e){
