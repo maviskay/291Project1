@@ -6,13 +6,15 @@ import java.util.Calendar;
 public class NewVehicle{
 	// Registers new vehicle
 	public static void vehicleRegistration(Connection dbConn) {
-		int currYear = Calendar.getInstance().get(Calendar.YEAR);
-		PreparedStatement checkSerial;
-		ResultSet serialCount;
+		PreparedStatement checkSerial, findOwner, addVehicle;
+		ResultSet serialCount, ownerCount;
 		Scanner keyboard;
-		String serialNum, maker, model, color;
-		String query = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
+		String serialNum, maker, model, color, ownerID;
+		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
+		String queryOwnerCount = "SELECT COUNT(owner_id) FROM owner WHERE owner_no = ?";
+		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?);
 		int year, typeID;
+		int currYear = Calendar.getInstance().get(Calendar.YEAR);
 
 		System.out.println("You have selected new vehicle registration");
 		// Requests for serial number
@@ -24,7 +26,8 @@ public class NewVehicle{
 				System.out.println("Serial number invalid");
 			else{
 				try{
-					checkSerial = dbConn.prepareStatement(query);
+					// TODO: make sure casing of string doesn't matter
+					checkSerial = dbConn.prepareStatement(querySerialCount);
 					checkSerial.setString(1, serialNum);
 					serialCount = checkSerial.executeQuery();
 					serialCount.next();
@@ -41,7 +44,7 @@ public class NewVehicle{
 		// Requests for vehicle make
 		while (true) {
 			System.out.print("Please enter make of vehicle: ");
-		        keyboard = new Scanner(System.in);
+		    keyboard = new Scanner(System.in);
 			maker = keyboard.nextLine();
 			if (maker.length() > 20)
 				System.out.println("Make of vehicle invalid");
@@ -86,44 +89,79 @@ public class NewVehicle{
 		// Requests for vehicle type
 		while (true) {
 			typeID = checkVehicleType(dbConn);
+			// Should not reach here
 			if (typeID == -1)
 				System.out.println("Type of vehicle invalid");
 			else
-				System.out.println(typeID);
+				break;
 		}
-
+		// TODO: Insert new vehicle to database
+		
+/*		//Checks to see if owner exists
+		while (true) {
+			System.out.print("Please enter the owner id: ");
+			keyboard = new Scanner(System.in);
+			ownerID = keyboard.nextLine();
+			if (ownerID.length() != 15)
+				System.out.println("Owner id invalid");
+			else{
+				findOwner = dbConn.prepareStatement(queryOwnerCount);
+				findOwner.setString(1, owner);
+				ownerCount = findType.executeQuery();
+				ownerCount.next();
+				if (ownerCount.getInt(1) != 0){					
+					ownerCounts.close();
+					System.out.println("Owner does not exist, please enter information of owner");
+					addOwner(dbConn, ownerID);
+				}
+				// owner exists, add vehicle
+				break;
+					
+			}
+		}
+		if (ownerID.equals(NULL))
+			addOwner(dbConn);
+		else
+			// owner exists, only add vehicle 
+*/
 	}
-	// TODO: see if casing of string matters
+
+	// TODO: make sure casing of string matters
 	// Checks for vehicle type and returns type_id
 	public static int checkVehicleType(Connection dbConn){
 		PreparedStatement findType;
 		ResultSet typeResult;
 		Scanner keyboard;
 		String type;
-		String query = "SELECT type_id FROM vehicle_type WHERE type = ?";
+		String queryTypeID = "SELECT type_id FROM vehicle_type WHERE type = ?";
+		int padding, typeID = -1;
 
 		System.out.print("Please enter type of vehicle: ");
 		keyboard = new Scanner(System.in);
 		type = keyboard.nextLine();
+		padding = 10 - type.length();
 		if (type.length() > 10)
 			return -1;
 		else{
-			type += "       ";
+			// Padding for char(10) of type
+			for (int i = 0; i < padding; i++)
+				type += " ";
 			try{
 				// Assume all vehicle types are already in database
-				findType = dbConn.prepareStatement(query);
+				findType = dbConn.prepareStatement(queryTypeID);
 				findType.setString(1, type);
 				typeResult = findType.executeQuery();
-				while(typeResult.next()){
-					int test = typeResult.getInt("type_id");
-					System.out.println("Hello" + test);
-				}
+				while(typeResult.next())
+					typeID = typeResult.getInt("type_id");
 				typeResult.close();
 			} catch (SQLException e){
 				System.out.println(e.getMessage());
 			}
 		}
-		// Should never reach here
-		return -1;
+		return typeID;
 	}
+	
+	/*public static void addOwner(Connection dbConn, String ownerID){
+		
+	}*/
 }
