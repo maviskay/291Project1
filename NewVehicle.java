@@ -9,13 +9,13 @@ public class NewVehicle{
 		PreparedStatement checkSerial, findPeople, addVehicle;
 		ResultSet serialCount, peopleCount;
 		Scanner keyboard;
-		String serialNum, maker, model, color, ownerID;
+		String serialNum, maker, model, color, ownerID, primary;
 		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
 		String queryPeopleCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?)";
 		int year, typeID, padding;
 		int currYear = Calendar.getInstance().get(Calendar.YEAR);
-
+		NewPeople.addPeople(dbConn, "1234");
 		System.out.println("You have selected new vehicle registration");
 		// Requests for serial number
 		while (true) {
@@ -139,6 +139,18 @@ public class NewVehicle{
 				}
 				break;	
 			}
+		}
+		// Check if primary owner
+		while (true) {
+			System.out.print("Is this owner a primary owner: ");
+			keyboard = new Scanner(System.in);
+			primary = keyboard.nextLine();
+			if (primary.length() != 1)
+				System.out.println("Primary owner status invalid");
+			else if (!primary.equalsIgnoreCase("y") || !primary.equalsIgnoreCase("n"))
+				System.out.println("Primary owner status invalid");
+		    else
+				break;
 		}
 		// Inserts owner to database
 		NewOwner.addOwner(dbConn, serialNum, ownerID, primary);

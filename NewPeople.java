@@ -15,7 +15,6 @@ public class NewPeople{
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date bDate = new java.util.Date();;
 		java.sql.Date bDay;
-		System.out.println(utilDate);
 		String queryNewPeople = "INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		// Requests for name
@@ -87,7 +86,8 @@ public class NewPeople{
 			gender = keyboard.nextLine();
 			if (gender.length() != 1)
 				System.out.println("Gender invalid");
-			else if (gender.equalsIgnoreCase("f") || gender.equalsIgnoreCase("m"))
+			// TODO: GET THIS TO WORK
+			else if ((!gender.contains("f")) || (!gender.contains("m")))
 				System.out.println("Gender invalid");
 			else
 			    break;
