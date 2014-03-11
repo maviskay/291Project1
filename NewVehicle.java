@@ -26,7 +26,6 @@ public class NewVehicle{
 				System.out.println("Serial number invalid");
 			else{
 				try{
-					// TODO: make sure casing of string doesn't matter
 					checkSerial = dbConn.prepareStatement(querySerialCount);
 					checkSerial.setString(1, serialNum);
 					serialCount = checkSerial.executeQuery();

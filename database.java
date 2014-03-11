@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.io.Console;
 
 // export CLASSPATH=$CLASSPATH\:.\:/oracle/jdbc/lib/classes12.zip
+// TODO: make sure casing of string doesn't matter
 
 public class database {
 	static Connection conn = null;
