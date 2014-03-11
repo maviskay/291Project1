@@ -13,7 +13,7 @@ public class NewVehicle{
 		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
 		String queryOwnerCount = "SELECT COUNT(owner_id) FROM owner WHERE owner_no = ?";
 		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?)";
-		int year, typeID;
+		int year, typeID, padding;
 		int currYear = Calendar.getInstance().get(Calendar.YEAR);
 
 		System.out.println("You have selected new vehicle registration");
@@ -22,9 +22,12 @@ public class NewVehicle{
 		    System.out.print("Please enter the vehicle's serial number: ");
 			keyboard = new Scanner(System.in);
 			serialNum = keyboard.nextLine();
-			if (serialNum.length() != 15)
+			if (serialNum.length() > 15)
 				System.out.println("Serial number invalid");
 			else{
+				padding = 15 - serialNum.length();
+				for (int i = 0; i < padding; i++)
+					serialNum += " ";
 				try{
 					checkSerial = dbConn.prepareStatement(querySerialCount);
 					checkSerial.setString(1, serialNum);
@@ -94,8 +97,20 @@ public class NewVehicle{
 			else
 				break;
 		}
-		// TODO: Insert new vehicle to database
-		
+		// Inserts vehicle to database
+		try {
+			addVehicle = dbConn.prepareStatement(queryNewVehicle);
+			addVehicle.setString(1, serialNum);
+			addVehicle.setString(2, maker);
+			addVehicle.setString(3, model);
+			addVehicle.setInt(4, year);
+			addVehicle.setString(5, color);
+			addVehicle.setInt(6, typeID);
+			addVehicle.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
 /*		//Checks to see if owner exists
 		while (true) {
 			System.out.print("Please enter the owner id: ");

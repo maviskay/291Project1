@@ -7,7 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class NewLicence {
-	
+	// Registers new licence
 	public static void licenceRegistration(Connection dbConn) {
 		Scanner keyboard;
 		PreparedStatement checkLicence;
@@ -21,6 +21,7 @@ public class NewLicence {
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 		Date exDate = null;
 
+		// TODO: request sin number
 		System.out.println("You have selected driver licence registration");
 		// Requests for licence number
 		while (true) {
@@ -82,7 +83,6 @@ public class NewLicence {
 			else
 				break;
 		}
-		// TODO: request sin number
 	}
 	
 }
