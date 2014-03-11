@@ -58,7 +58,7 @@ public class VehicleTransaction {
 	
 		// Request vehicle serial number being sold
 		while(true) {
-			System.out.print("Please enter the vehicle's serial numberL ");
+			System.out.print("Please enter the vehicle's serial number: ");
 
 			keyboard = new Scanner(System.in);
 			serialNum = keyboard.nextLine();
