@@ -12,7 +12,7 @@ public class NewVehicle{
 		String serialNum, maker, model, color, ownerID;
 		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
 		String queryOwnerCount = "SELECT COUNT(owner_id) FROM owner WHERE owner_no = ?";
-		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?);
+		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?)";
 		int year, typeID;
 		int currYear = Calendar.getInstance().get(Calendar.YEAR);
 
@@ -125,7 +125,6 @@ public class NewVehicle{
 */
 	}
 
-	// TODO: make sure casing of string matters
 	// Checks for vehicle type and returns type_id
 	public static int checkVehicleType(Connection dbConn){
 		PreparedStatement findType;
