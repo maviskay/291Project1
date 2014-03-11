@@ -10,11 +10,13 @@ import java.text.ParseException;
 public class VehicleTransaction {
 	
 	public static void autoTransaction(Connection dbConn){
-		PreparedStatement checkSerial, checkSeller, sellers, checkSaleCount;
+		PreparedStatement checkSerial, checkSeller, sellers;
+		PreparedStatement checkSaleCount, checkPersonCount;
 		ResultSet serialCount, sellerCount, allSellers, saleCount;
-		String serialNum, seller, inputDate;
-		int numBuyers, transID;
-		double price;
+		ResultSet personCount;
+		String serialNum, seller, inputDate, buyer, isPrimary;
+		int numBuyers, transID, i = 0;
+ 		double price;
 		Date saleDate = null;
 		Scanner keyboard;
 		java.util.Date currentDate = new java.util.Date();
@@ -23,6 +25,8 @@ public class VehicleTransaction {
 		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
 
 		String querySellerCount = "SELECT COUNT(owner_id) FROM owner WHERE owner_id = ?";
+
+		String queryPersonCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 
 		String querySellers = "SELECT owner_id FROM owner WHERE vehicle_id = ?";
 		String queryTransCount = "SELECT COUNT(*) FROM auto_sale";
@@ -127,24 +131,52 @@ public class VehicleTransaction {
 			}
 					
 		}
-	/*	
-		// TODO Find or insert buyer information
+		
+		// Find or insert buyer information
 		while(true) {
 			System.out.print("Please enter the number of buyers: ");
 
 			keyboard = new Scanner(System.in);
 			numBuyers = keyboard.nextInt();
+			String[] buyers = new String[numBuyers];
 			if (numBuyers <= 0) 
 				System.out.println("There must be at least one buyer");
 			else {
-				try {
-					for (int i = 0; i < numBuyers; i++) {
-						
+				while(i < numBuyers){
+					// First entry is primary owner
+					if (i == 0) {
+						System.out.println("Please enter primary owner's SIN: ");
+					} else {
+						System.out.println("Please enter buyer's SIN: ");
 					}
-				} catch (SQLException e) {
-					System.out.println(e.getMessage());
+
+					// Check if buyer is a person
+					keyboard = new Scanner(System.in);
+					buyer = keyboard.nextLine();
+					if (buyer.length() > 15)
+						System.out.println("SIN number invalid");
+					else {
+						try {
+							checkPersonCount = dbConn.prepareStatement(queryPersonCount);
+							checkSeller.setString(1, buyer);
+							personCount = checkPersonCount.executeQuery();
+							personCount.next();
+							if (personCount.getInt(1) == 0) {
+								// If buyer not a person, add them
+								NewPeople.addPeople(dbConn, buyer);
+							}
+							// Add buyer to array of buyers
+							buyers[i] = buyer;
+							i++;
+
+						} catch (SQLException e) {
+							System.out.println(e.getMessage());
+						}
+					}			
 				}
-			}			
-		}*/
+			}
+		}
+		// TODO Remove then add owners from/to owner table
+		// TODO Input transation in auto_sale table
 	}
 }
