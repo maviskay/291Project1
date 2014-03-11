@@ -11,14 +11,18 @@ public class VehicleTransaction {
 	
 	public static void autoTransaction(Connection dbConn){
 		PreparedStatement checkSerial, checkSeller, sellers;
-		PreparedStatement checkSaleCount, checkPersonCount;
+		PreparedStatement checkSaleCount, checkPersonCount, addSale;
+		PreparedStatement findPrim, addOwner, removeOwner;
 		ResultSet serialCount, sellerCount, allSellers, saleCount;
-		ResultSet personCount;
-		String serialNum, seller, inputDate, buyer, isPrimary;
-		int numBuyers, transID, i = 0;
- 		double price;
-		Date saleDate = null;
+		ResultSet personCount, sellerPrim;
 		Scanner keyboard;
+		int numBuyers = 0, transID = 0, i = 0;
+ 		double price;
+		String serialNum, seller, inputDate, buyer, isPrimary;
+		String primSeller = null;
+		String[] buyers;
+		java.util.Date sDate = new java.util.Date();
+		java.sql.Date saleDate;
 		java.util.Date currentDate = new java.util.Date();
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -29,10 +33,19 @@ public class VehicleTransaction {
 		String queryPersonCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 
 		String querySellers = "SELECT owner_id FROM owner WHERE vehicle_id = ?";
+
 		String queryTransCount = "SELECT COUNT(*) FROM auto_sale";
 
+		String queryNewSale = "INSERT INTO auto_sale VALUES(?, ?, ?, ?, ?, ?)";
+
+		String querySellerPrim = "SELECT owner_id FROM owner WHERE vehicle_id = ? AND is_primary_owner = 'y'";
+
+		String queryRemoveOwner = "DELETE FROM owner WHERE vehicle_id = ?";
+		
+		String queryAddOwner ="INSERT INTO owner VALUES(?, ?, ?)";
+
 		System.out.println("You have selected auto transaction");
-	
+
 		// Obtain transaction id
 		try {
 			checkSaleCount = dbConn.prepareStatement(queryTransCount);
@@ -90,17 +103,18 @@ public class VehicleTransaction {
 			inputDate = keyboard.nextLine();
 			try {
 				formatDate.setLenient(false);
-				saleDate = formatDate.parse(inputDate);
+				sDate = formatDate.parse(inputDate);
 			} catch (ParseException e) {
 				System.out.println("Invalid sale date");
 				continue;
 			}
-			if (currentDate.before(saleDate))
+			if (currentDate.before(sDate))
 				System.out.println("Sale date cannot be later than current date");
 			else
 				break;
 				
 		}
+		saleDate = new java.sql.Date(sDate.getTime());
 
 		// Find the current vehicle owner(s)
 		while(true) {
@@ -138,14 +152,14 @@ public class VehicleTransaction {
 
 			keyboard = new Scanner(System.in);
 			numBuyers = keyboard.nextInt();
-			String[] buyers = new String[numBuyers];
+			buyers = new String[numBuyers];
 			if (numBuyers <= 0) 
 				System.out.println("There must be at least one buyer");
 			else {
 				while(i < numBuyers){
 					// First entry is primary owner
 					if (i == 0) {
-						System.out.println("Please enter primary owner's SIN: ");
+						System.out.println("Please enter primary buyer's SIN: ");
 					} else {
 						System.out.println("Please enter buyer's SIN: ");
 					}
@@ -174,9 +188,61 @@ public class VehicleTransaction {
 						}
 					}			
 				}
+				break;
 			}
 		}
-		// TODO Remove then add owners from/to owner table
-		// TODO Input transation in auto_sale table
+
+		// Find primary owner selling vehicle
+		try {
+			findPrim = dbConn.prepareStatement(querySellerPrim);
+			findPrim.setString(1, serialNum);
+			sellerPrim = checkSeller.executeQuery();
+			sellerPrim.next();
+			primSeller = sellerPrim.getString(1);
+		} catch (SQLException e){
+			System.out.println(e.getMessage());
+		}
+
+		// Update database
+		// Input transation in auto_sale table
+		try {
+			addSale = dbConn.prepareStatement(queryNewSale);
+			addSale.setInt(1, transID);
+			addSale.setString(2, primSeller);
+			addSale.setString(3, buyers[0]);
+			addSale.setString(4, serialNum);
+			addSale.setDate(5, saleDate);
+			addSale.setDouble(6, price);
+			addSale.executeUpdate();
+			System.out.println("Transaction added to database");
+		} catch (SQLException e){
+			System.out.println(e.getMessage());
+		}
+
+
+		// Remove then add owners from/to owner table
+		try {	
+			// Remove
+			removeOwner = dbConn.prepareStatement(queryRemoveOwner);
+			removeOwner.setString(1, serialNum);
+			removeOwner.executeUpdate();		
+
+			// Add	
+			for (int j = 0; j < numBuyers; j++) {
+				if (j == 0) 
+					isPrimary = "Y";
+				else 
+					isPrimary = "N";
+				addOwner = dbConn.prepareStatement(queryAddOwner);
+				addOwner.setString(1, buyers[j]);
+				addOwner.setString(2, serialNum);
+				addOwner.setString(3, isPrimary);
+				addOwner.executeUpdate();
+			}
+			System.out.println("Owner table updated to reflect sale");
+		} catch (SQLException e){
+			System.out.println(e.getMessage());
+		}
+
 	}
 }
