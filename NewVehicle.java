@@ -6,12 +6,12 @@ import java.util.Calendar;
 public class NewVehicle{
 	// Registers new vehicle
 	public static void vehicleRegistration(Connection dbConn) {
-		PreparedStatement checkSerial, findOwner, addVehicle;
-		ResultSet serialCount, ownerCount;
+		PreparedStatement checkSerial, findPeople, addVehicle;
+		ResultSet serialCount, peopleCount;
 		Scanner keyboard;
 		String serialNum, maker, model, color, ownerID;
 		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
-		String queryOwnerCount = "SELECT COUNT(owner_id) FROM owner WHERE owner_no = ?";
+		String queryPeopleCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?)";
 		int year, typeID, padding;
 		int currYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -107,37 +107,39 @@ public class NewVehicle{
 			addVehicle.setString(5, color);
 			addVehicle.setInt(6, typeID);
 			addVehicle.executeUpdate();
+			System.out.println("Vehicle added to the database");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-
-/*		//Checks to see if owner exists
+		//Checks to see if owner exists
+		System.out.println("Please register owner to the vehicle");
 		while (true) {
 			System.out.print("Please enter the owner id: ");
 			keyboard = new Scanner(System.in);
 			ownerID = keyboard.nextLine();
-			if (ownerID.length() != 15)
+			if (ownerID.length() > 15)
 				System.out.println("Owner id invalid");
 			else{
-				findOwner = dbConn.prepareStatement(queryOwnerCount);
-				findOwner.setString(1, owner);
-				ownerCount = findType.executeQuery();
-				ownerCount.next();
-				if (ownerCount.getInt(1) != 0){					
-					ownerCounts.close();
-					System.out.println("Owner does not exist, please enter information of owner");
-					addOwner(dbConn, ownerID);
+				padding = 15 - ownerID.length();
+				for (int i = 0; i < padding; i++)
+					ownerID += " ";
+				try {
+					findPeople = dbConn.prepareStatement(queryPeopleCount);
+					findPeople.setString(1, ownerID);
+					peopleCount = findPeople.executeQuery();
+					peopleCount.next();
+					if (peopleCount.getInt(1) != 0){					
+						peopleCount.close();
+						System.out.println("Person does not exist, please enter information of owner");
+						NewPeople.addPeople(dbConn, ownerID);
+					}
+				} catch (SQLException e){
+					System.out.println(e.getMessage());
 				}
-				// owner exists, add vehicle
-				break;
-					
+				break;	
 			}
 		}
-		if (ownerID.equals(NULL))
-			addOwner(dbConn);
-		else
-			// owner exists, only add vehicle 
-*/
+		// Add owner
 	}
 
 	// Checks for vehicle type and returns type_id
@@ -173,8 +175,4 @@ public class NewVehicle{
 		}
 		return typeID;
 	}
-	
-	/*public static void addOwner(Connection dbConn, String ownerID){
-		
-	}*/
 }
