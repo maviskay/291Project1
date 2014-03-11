@@ -111,7 +111,7 @@ public class NewVehicle{
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-		//Checks to see if owner exists
+		// Checks to see if owner exists
 		System.out.println("Please register owner to the vehicle");
 		while (true) {
 			System.out.print("Please enter the owner id: ");
@@ -131,6 +131,7 @@ public class NewVehicle{
 					if (peopleCount.getInt(1) != 0){					
 						peopleCount.close();
 						System.out.println("Person does not exist, please enter information of owner");
+						// Person does not exist, request person info
 						NewPeople.addPeople(dbConn, ownerID);
 					}
 				} catch (SQLException e){
@@ -139,7 +140,8 @@ public class NewVehicle{
 				break;	
 			}
 		}
-		// Add owner
+		// Inserts owner to database
+		NewOwner.addOwner(dbConn, serialNum, ownerID, primary);
 	}
 
 	// Checks for vehicle type and returns type_id
