@@ -2,7 +2,7 @@ New Vehicle
 	vehicle attributes
 	check owner
 		New People(sin) - people 
-		Drive Licence(sin) - licence & drive condition
+		Drive Licence(sin, personAdded) - licence & drive condition
 	add owner
 
 Auto Transaction
