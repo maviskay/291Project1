@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.InputMismatchException;
 
 public class NewPeople{
 	// Registers new person
@@ -29,25 +30,33 @@ public class NewPeople{
 		}
 		// Requests for height
 		while (true) {
-			System.out.print("Please enter height of person: ");
-		    keyboard = new Scanner(System.in);
-			height = keyboard.nextDouble();
-			heightString = height.toString().split("\\.");
-			if (heightString[0].length() > 3 || heightString[1].length() > 2)
-				System.out.println("Height invalid");
-			else
-			    break;
+			try {
+				System.out.print("Please enter height of person: ");
+				keyboard = new Scanner(System.in);
+				height = keyboard.nextDouble();
+				heightString = height.toString().split("\\.");
+				if (heightString[0].length() > 3 || heightString[1].length() > 2)
+					System.out.println("Height invalid");
+				else
+					break;
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid option");
+			}
 		}
 		// Requests for weight
 		while (true) {
-			System.out.print("Please enter weight of person: ");
-		    keyboard = new Scanner(System.in);
-			weight = keyboard.nextDouble();
-			weightString = weight.toString().split("\\.");
-			if (weightString[0].length() > 3 || weightString[1].length() > 2)
-				System.out.println("Weight invalid");
-			else
-			    break;
+			try {
+				System.out.print("Please enter weight of person: ");
+				keyboard = new Scanner(System.in);
+				weight = keyboard.nextDouble();
+				weightString = weight.toString().split("\\.");
+				if (weightString[0].length() > 3 || weightString[1].length() > 2)
+					System.out.println("Weight invalid");
+				else
+					break;
+			} catch (InputMismatchException e){
+				System.out.println("Invalid option");
+			}
 		}
 		// Requests for eye color
 		while (true) {
@@ -124,7 +133,7 @@ public class NewPeople{
 			addPerson.setDate(9, bDay);
 			addPerson.executeUpdate();
 			System.out.println("Person added to the database");
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 
