@@ -76,7 +76,7 @@ public class database {
 				VehicleTransaction.autoTransaction(conn);
 			} else if (selection == 3){
 				System.out.println("You have selected driver licence registration");
-				NewLicence.licenceRegistration(conn);
+				NewLicence.licenceRegistration(conn, "-1", "-1", 0);
 			} else if (selection == 4){
 				System.out.println("You have selected violation record");
 				Violation.violationRecord(conn);

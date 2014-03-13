@@ -8,15 +8,18 @@ import java.util.InputMismatchException;
 public class NewPeople{
 	// Registers new person
 	public static void addPeople(Connection dbConn, String sin) {
-		PreparedStatement addPerson;
+		PreparedStatement addPerson, findLicence;
+		ResultSet licenceCount;
 		Scanner keyboard;
-		String name, heightString[], weightString[], eyeColor, hairColor, address, gender, birthday;
+		String name, heightString[], weightString[], eyeColor, hairColor, address, gender, birthday, licenceNum;
 		Double height, weight;
+		int padding;
 		java.util.Date utilDate = new java.util.Date();
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date bDate = new java.util.Date();;
 		java.sql.Date bDay;
 		String queryNewPeople = "INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String queryLicenceCount = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
 
 		// Requests for name
 		while (true) {
@@ -136,6 +139,33 @@ public class NewPeople{
 			System.out.println(e.getMessage());
 		}
 
-		//TODO: INSERT DRIVE LICENCE
+		// Check to see if driver licence exists
+		System.out.println("Please register owner's licence number: ");
+		while (true) {
+			System.out.println("Please enter licence number: ");
+			keyboard = new Scanner(System.in);
+			licenceNum = keyboard.nextLine();
+			if (licenceNum.length() > 15)
+				System.out.println("Licence number invalid");
+			else {
+				padding = 15 - licenceNum.length();
+				for (int i = 0; i < padding; i++)
+					licenceNum += " ";
+				try {
+					findLicence = dbConn.prepareStatement(queryLicenceCount);
+					findLicence.setString(1, licenceNum);
+					licenceCount = findLicence.executeQuery();
+					licenceCount.next();
+					if (licenceCount.getInt(1) != 0) {
+						licenceCount.close();
+						NewLicence.licenceRegistration(dbConn, sin, licenceNum, 1);
+						break;
+					} else
+						System.out.println("Licence already exists, please enter information of licence");
+				} catch (SQLException e){
+					System.out.println(e.getMessage());
+				}
+			}
+		}
 	}
 }

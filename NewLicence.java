@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 
 public class NewLicence {
 	// Registers new licence
-	public static void licenceRegistration(Connection dbConn) {
+    public static void licenceRegistration(Connection dbConn, String sin, String licence_no, int personAdded) {
 		Scanner keyboard;
 		PreparedStatement checkLicence;
 		ResultSet licenceCount;
@@ -21,9 +21,12 @@ public class NewLicence {
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 		Date exDate = null;
 
-		// TODO: request sin number
+		// TODO: request/check sin number
 		// Requests for licence number
 		while (true) {
+			// Licence number already given
+			if (licence_no.contains("-1"))
+				break;
 		    System.out.print("Please enter the licence number: ");
 			keyboard = new Scanner(System.in);
 			licenceNum = keyboard.nextLine();

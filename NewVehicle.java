@@ -15,7 +15,6 @@ public class NewVehicle{
 		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?)";
 		int year, typeID, padding;
 		int currYear = Calendar.getInstance().get(Calendar.YEAR);
-		NewPeople.addPeople(dbConn, "1234");
 
 		// Requests for serial number
 		while (true) {
