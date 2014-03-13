@@ -16,7 +16,7 @@ public class NewVehicle{
 		int year, typeID, padding;
 		int currYear = Calendar.getInstance().get(Calendar.YEAR);
 		NewPeople.addPeople(dbConn, "1234");
-		System.out.println("You have selected new vehicle registration");
+
 		// Requests for serial number
 		while (true) {
 		    System.out.print("Please enter the vehicle's serial number: ");
@@ -112,7 +112,7 @@ public class NewVehicle{
 			System.out.println(e.getMessage());
 		}
 		// Checks to see if owner exists
-		System.out.println("Please register owner to the vehicle");
+		System.out.println("Please register owner of the vehicle");
 		while (true) {
 			System.out.print("Please enter the owner id: ");
 			keyboard = new Scanner(System.in);

@@ -35,8 +35,6 @@ public class Violation {
 
 		String queryAddTicket = "INSERT INTO ticket VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
-		System.out.println("You have selected violation record");
-
 		// Obtain ticket number
 		try {
 			checkTicketCount = dbConn.prepareStatement(queryTicketCount);

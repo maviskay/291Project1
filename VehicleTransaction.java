@@ -44,8 +44,6 @@ public class VehicleTransaction {
 		
 		String queryAddOwner ="INSERT INTO owner VALUES(?, ?, ?)";
 
-		System.out.println("You have selected auto transaction");
-
 		// Obtain transaction id
 		try {
 			checkSaleCount = dbConn.prepareStatement(queryTransCount);

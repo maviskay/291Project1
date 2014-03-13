@@ -68,17 +68,22 @@ public class database {
 			    continue;
 			}
 			// Searches for user's selection
-			if (selection == 1)
+			if (selection == 1){
+				System.out.println("You have selected new vehicle registration");
 				NewVehicle.vehicleRegistration(conn);
-			else if (selection == 2)
+			} else if (selection == 2){
+				System.out.println("You have selected auto transaction");
 				VehicleTransaction.autoTransaction(conn);
-			else if (selection == 3)
+			} else if (selection == 3){
+				System.out.println("You have selected driver licence registration");
 				NewLicence.licenceRegistration(conn);
-			else if (selection == 4)
+			} else if (selection == 4){
+				System.out.println("You have selected violation record");
 				Violation.violationRecord(conn);
-			else if (selection == 5)
+			} else if (selection == 5){
+				System.out.println("You have selected search engine");
 				Search.searchEngine(conn);
-			else if (selection == 6){
+			} else if (selection == 6){
 				System.out.println("Connection to database will now close");
 				try {
 					conn.close();

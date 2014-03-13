@@ -22,7 +22,6 @@ public class NewLicence {
 		Date exDate = null;
 
 		// TODO: request sin number
-		System.out.println("You have selected driver licence registration");
 		// Requests for licence number
 		while (true) {
 		    System.out.print("Please enter the licence number: ");
