@@ -95,11 +95,10 @@ public class NewPeople{
 			gender = keyboard.nextLine();
 			if (gender.length() != 1)
 				System.out.println("Gender invalid");
-			// TODO: GET THIS TO WORK
-			else if ((!gender.contains("f")) || (!gender.contains("m")))
-				System.out.println("Gender invalid");
+			if ((gender.contains("f")) || (gender.contains("m")))
+				break;
 			else
-			    break;
+				System.out.println("Gender invalid");
 		}
 		// Requests for birthday
 		while (true) {
