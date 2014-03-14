@@ -132,6 +132,7 @@ public class NewVehicle{
 						System.out.println("Person does not exist, please enter information of owner");
 						// Person does not exist, request person info
 						NewPeople.addPeople(dbConn, ownerID);
+						break;
 					}
 				} catch (SQLException e){
 					System.out.println(e.getMessage());
@@ -146,10 +147,10 @@ public class NewVehicle{
 			primary = keyboard.nextLine();
 			if (primary.length() != 1)
 				System.out.println("Primary owner status invalid");
-			else if (!primary.equalsIgnoreCase("y") || !primary.equalsIgnoreCase("n"))
-				System.out.println("Primary owner status invalid");
-		    else
+			else if ((primary.contains("y")) || (primary.contains("n")))
 				break;
+		    else
+				System.out.println("Primary owner status invalid");
 		}
 		// Inserts owner to database
 		NewOwner.addOwner(dbConn, serialNum, ownerID, primary);

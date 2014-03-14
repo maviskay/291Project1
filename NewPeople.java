@@ -98,7 +98,7 @@ public class NewPeople{
 			gender = keyboard.nextLine();
 			if (gender.length() != 1)
 				System.out.println("Gender invalid");
-			if ((gender.contains("f")) || (gender.contains("m")))
+			else if ((gender.contains("f")) || (gender.contains("m")))
 				break;
 			else
 				System.out.println("Gender invalid");
@@ -157,6 +157,7 @@ public class NewPeople{
 					licenceCount = findLicence.executeQuery();
 					licenceCount.next();
 					if (licenceCount.getInt(1) != 0) {
+						// Registers new licence
 						licenceCount.close();
 						NewLicence.licenceRegistration(dbConn, sin, licenceNum, 1);
 						break;
