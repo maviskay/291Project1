@@ -1,4 +1,5 @@
 make:
+	rm *.class
 	javac database.java
 	javac NewLicence.java
 	javac NewOwner.java
