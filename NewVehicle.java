@@ -142,7 +142,7 @@ public class NewVehicle {
 					findPeople.setString(1, ownerID);
 					peopleCount = findPeople.executeQuery();
 					peopleCount.next();
-					if (peopleCount.getInt(1) != 0) {
+					if (peopleCount.getInt(1) == 0) {
 						peopleCount.close();
 						System.out
 								.println("Person does not exist, please enter information of owner");
@@ -169,7 +169,7 @@ public class NewVehicle {
 							findPeople.setString(1, ownerID);
 							peopleCount = findPeople.executeQuery();
 							peopleCount.next();
-							if (peopleCount.getInt(1) != 0) {
+							if (peopleCount.getInt(1) == 0) {
 								peopleCount.close();
 								System.out
 										.println("Person does not exist, please enter information of owner");
