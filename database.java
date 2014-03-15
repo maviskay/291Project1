@@ -6,6 +6,7 @@ import java.io.Console;
 // export CLASSPATH=$CLASSPATH\:.\:/oracle/jdbc/lib/classes12.zip
 // TODO: make sure casing of string doesn't matter
 // TODO: check that certain strings only contain alphabets eg: eye color
+// TODO: make sure drive licence photo works
 
 public class database {
 	static Connection conn = null;
