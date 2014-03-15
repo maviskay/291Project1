@@ -15,7 +15,7 @@ public class NewLicence {
 		PreparedStatement checkLicence, checkSin, addLicence;
 		ResultSet licenceCount, sinCount, licenceExist;
 		File photo;
-		String licenceNum, classVal, photoFile, expireDate;
+		String classVal, photoFile, expireDate;
 		String path = System.getProperty("user.dir");
 		String queryLicenceCount = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
 		String querySinLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE sin = ?";
@@ -76,22 +76,22 @@ public class NewLicence {
 				break;
 		    System.out.print("Please enter the licence number: ");
 			keyboard = new Scanner(System.in);
-			licenceNum = keyboard.nextLine();
-			if (licenceNum.length() > 15)
+			licence_no = keyboard.nextLine();
+			if (licence_no.length() > 15)
 				System.out.println("Licence number invalid");
 			else{
-				padding = 15 - licenceNum.length();
+				padding = 15 - licence_no.length();
 				for (int i = 0; i < padding; i++)
-					licenceNum += " ";
+					licence_no += " ";
 				try{
 					checkLicence = dbConn.prepareStatement(queryLicenceCount);
-					checkLicence.setString(1, licenceNum);
+					checkLicence.setString(1, licence_no);
 					licenceCount = checkLicence.executeQuery();
 					licenceCount.next();
 					if (licenceCount.getInt(1) != 0){					
 						licenceCount.close();
 						System.out.println("Licence already exists");
-						licenceNum = "-1";
+						licence_no = "-1";
 					} else
 						break;
 				} catch (SQLException e){
@@ -161,7 +161,6 @@ public class NewLicence {
 			System.out.println(e.getMessage());
 		}
 	}
-	
 }
 
 
