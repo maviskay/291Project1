@@ -19,7 +19,7 @@ public class NewLicence {
 		String path = System.getProperty("user.dir");
 		String queryLicenceCount = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
 		String querySinCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
-		String queryNewLicence = "INSERT INTO drive_licence VALUES(?, ?, ?, ?, ?)";
+		String queryNewLicence = "INSERT INTO drive_licence VALUES(?, ?, ?, ?, ?, ?)";
 		java.util.Date utilDate = new java.util.Date();
 		java.sql.Date issueDate = new java.sql.Date(utilDate.getTime());
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
