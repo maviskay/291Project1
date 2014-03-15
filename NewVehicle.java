@@ -223,3 +223,4 @@ public class NewVehicle {
 		return typeID;
 	}
 }
+

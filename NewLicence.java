@@ -30,12 +30,12 @@ public class NewLicence {
 		// Request for sin number
 		while (true) {
 			// Sin number already given
-			if (sin.contains("-1"))
+			if (!sin.equalsIgnoreCase("-1"))
 				break;
 			System.out.print("Please enter the sin number: ");
 			keyboard = new Scanner(System.in);
 			sin = keyboard.nextLine();
-			if (sin.length() != 15)
+			if (sin.length() > 15)
 				System.out.println("Sin number invalid");
 			else{
 				padding = 15 - sin.length();
@@ -49,6 +49,7 @@ public class NewLicence {
 					if (sinCount.getInt(1) != 0){					
 						sinCount.close();
 						System.out.println("Sin already exists");
+						sin = "-1";
 					} else
 						break;
 				} catch (SQLException e){
@@ -59,12 +60,12 @@ public class NewLicence {
 		// Requests for licence number
 		while (true) {
 			// Licence number already given
-			if (licence_no.contains("-1"))
+			if (!licence_no.equalsIgnoreCase("-1"))
 				break;
 		    System.out.print("Please enter the licence number: ");
 			keyboard = new Scanner(System.in);
 			licenceNum = keyboard.nextLine();
-			if (licenceNum.length() != 15)
+			if (licenceNum.length() > 15)
 				System.out.println("Licence number invalid");
 			else{
 				padding = 15 - licenceNum.length();
@@ -78,6 +79,7 @@ public class NewLicence {
 					if (licenceCount.getInt(1) != 0){					
 						licenceCount.close();
 						System.out.println("Licence already exists");
+						licenceNum = "-1";
 					} else
 						break;
 				} catch (SQLException e){
@@ -105,10 +107,10 @@ public class NewLicence {
 			photo = new File(photoFile);
 			try {
 				photoArray = new FileInputStream(photo);
+				break;
 			} catch (FileNotFoundException e) {
 				System.out.println(e.getMessage());
 			}
-			break;
 		}
 		// Request expiring date
 		while (true) {
@@ -143,7 +145,10 @@ public class NewLicence {
 			System.out.println(e.getMessage());
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
+		} catch (NullPointerException e) {
+			System.out.println(e.getMessage());
 		}
 	}
 	
 }
+
