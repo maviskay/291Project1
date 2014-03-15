@@ -7,7 +7,7 @@ import java.util.InputMismatchException;
 
 public class NewPeople {
 	// Registers new person
-	public static void addPeople(Connection dbConn, String sin) {
+	public static void addPeople(Connection dbConn, String sin, int requestLicence) {
 		PreparedStatement addPerson, findLicence;
 		ResultSet licenceCount;
 		Scanner keyboard;
@@ -142,8 +142,10 @@ public class NewPeople {
 			System.out.println(e.getMessage());
 		}
 
-		// Check if person has licence number
-		System.out.print("Does this person have a licence number (y/n)? ");
+		if (requestLicence != 1)
+			return;
+		else
+			System.out.println("Does this person have a licence");
 		while (true) {
 			keyboard = new Scanner(System.in);
 			hasLicence = keyboard.nextLine();
@@ -182,8 +184,10 @@ public class NewPeople {
 						}
 					}
 				}
-			}
+			} else
+				break;
 		}
 	}
 }
+
 

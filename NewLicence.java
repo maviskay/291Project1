@@ -13,11 +13,12 @@ public class NewLicence {
 		FileInputStream photoArray = null;
 		Scanner keyboard;
 		PreparedStatement checkLicence, checkSin, addLicence;
-		ResultSet licenceCount, sinCount;
+		ResultSet licenceCount, sinCount, licenceExist;
 		File photo;
 		String licenceNum, classVal, photoFile, expireDate;
 		String path = System.getProperty("user.dir");
 		String queryLicenceCount = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
+		String querySinLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE sin = ?";
 		String querySinCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 		String queryNewLicence = "INSERT INTO drive_licence VALUES(?, ?, ?, ?, ?, ?)";
 		java.util.Date utilDate = new java.util.Date();
@@ -48,10 +49,21 @@ public class NewLicence {
 					sinCount.next();
 					if (sinCount.getInt(1) != 0){					
 						sinCount.close();
-						System.out.println("Sin already exists");
-						sin = "-1";
-					} else
+						checkLicence = dbConn.prepareStatement(querySinLicence);
+						checkLicence.setString(1, sin);
+						licenceExist = checkLicence.executeQuery();
+						licenceExist.next();
+						if (licenceExist.getInt(1) != 0){					
+							licenceExist.close();
+							System.out.println("This person already has a licence");
+							sin = "-1";
+						} else
+							break;
+					} else {
+						System.out.println("Person does not exist");
+						NewPeople.addPeople(dbConn, sin, 0);
 						break;
+					}
 				} catch (SQLException e){
 					System.out.println(e.getMessage());
 				}
@@ -151,4 +163,5 @@ public class NewLicence {
 	}
 	
 }
+
 

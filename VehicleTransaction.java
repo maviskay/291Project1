@@ -175,7 +175,7 @@ public class VehicleTransaction {
 							personCount.next();
 							if (personCount.getInt(1) == 0) {
 								// If buyer not a person, add them
-								NewPeople.addPeople(dbConn, buyer);
+								NewPeople.addPeople(dbConn, buyer, 1);
 							}
 							// Add buyer to array of buyers
 							buyers[i] = buyer;
@@ -244,3 +244,4 @@ public class VehicleTransaction {
 
 	}
 }
+

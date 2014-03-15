@@ -117,7 +117,10 @@ public class NewVehicle {
 				System.out.print("How many people own this vehicle: ");
 				keyboard = new Scanner(System.in);
 				ownerCount = keyboard.nextInt();
-				break;
+				if (ownerCount == 0)
+					System.out.println("Vehicle needs at least one owner");
+				else
+					break;
 			} catch (InputMismatchException e) {
 				System.out.println("Invalid number of owners");
 				continue;
@@ -147,7 +150,7 @@ public class NewVehicle {
 						System.out
 								.println("Person does not exist, please enter information of owner");
 						// Person does not exist, request person info
-						NewPeople.addPeople(dbConn, ownerID);
+						NewPeople.addPeople(dbConn, ownerID, 1);
 					}
 					NewOwner.addOwner(dbConn, serialNum, ownerID, "y");
 				} catch (SQLException e) {
@@ -174,7 +177,7 @@ public class NewVehicle {
 								System.out
 										.println("Person does not exist, please enter information of owner");
 								// Person does not exist, request person info
-								NewPeople.addPeople(dbConn, ownerID);
+								NewPeople.addPeople(dbConn, ownerID, 1);
 							}
 						} catch (SQLException e) {
 							System.out.println(e.getMessage());
@@ -223,4 +226,5 @@ public class NewVehicle {
 		return typeID;
 	}
 }
+
 
