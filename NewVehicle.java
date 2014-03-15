@@ -106,6 +106,7 @@ public class NewVehicle {
 			addVehicle.setString(5, color);
 			addVehicle.setInt(6, typeID);
 			addVehicle.executeUpdate();
+			addVehicle.close();
 			System.out.println("Vehicle added to the database");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

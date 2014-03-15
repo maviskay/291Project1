@@ -1,13 +1,11 @@
 import java.sql.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Date;
-import java.util.Calendar;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.io.FileInputStream;
-
-// TODO: licence extras - driving condition & restrictions
 
 public class NewLicence {
 	// Registers new licence
@@ -15,21 +13,24 @@ public class NewLicence {
 			String licence_no, int personAdded) {
 		FileInputStream photoArray = null;
 		Scanner keyboard;
-		PreparedStatement checkLicence, checkSin, addLicence;
-		ResultSet licenceCount, sinCount, licenceExist;
+		PreparedStatement checkLicence, checkSin, addLicence, checkCondition, addCondition, addRestriction;
+		ResultSet licenceCount, sinCount, licenceExist, conditionCount;
 		File photo;
-		String classVal, photoFile, expireDate;
+		String classVal, photoFile, expireDate, hasCondition, condDes;
 		String path = System.getProperty("user.dir");
 		String queryLicenceCount = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
 		String querySinLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE sin = ?";
 		String querySinCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 		String queryNewLicence = "INSERT INTO drive_licence VALUES(?, ?, ?, ?, ?, ?)";
+		String queryConditionCount = "SELECT COUNT(c_id) FROM driving_condition WHERE c_id = ?";
+		String queryNewCondition = "INSERT INTO driving_condition VALUES(?, ?)";
+		String queryNewRestriction = "INSERT INTO restriction VALUES(?, ?)";
 		java.util.Date utilDate = new java.util.Date();
 		java.sql.Date issueDate = new java.sql.Date(utilDate.getTime());
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 		Date exDate = null;
 		java.sql.Date eDate;
-		int padding;
+		int padding, condition, conditionExists = 0;
 
 		// Request for sin number
 		while (true) {
@@ -164,6 +165,76 @@ public class NewLicence {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} catch (NullPointerException e) {
+			System.out.println(e.getMessage());
+		}
+
+		// Check if person has conditions
+		System.out.print("Does this person have any special conditions (y or n)? ");
+		while (true) {
+			keyboard = new Scanner(System.in);
+			hasCondition = keyboard.nextLine();
+			if (hasCondition.length() != 1) {
+				System.out
+						.print("Selection invalid\n Please enter 'y' or 'n': ");
+			} else if (hasCondition.contains("y")) {
+				break;
+			} else
+				return;
+		}
+		// Request drive condition
+		while (true) {
+			System.out.print("Please enter the condition id: ");
+			keyboard = new Scanner(System.in);
+			condition = keyboard.nextInt();
+			try {
+				checkCondition = dbConn.prepareStatement(queryConditionCount);
+				checkCondition.setInt(1, condition);
+				conditionCount = checkCondition.executeQuery();
+				conditionCount.next();
+				if (conditionCount.getInt(1) != 0) {
+					conditionCount.close();
+					conditionExists = 1;
+					break;
+				} else {
+					conditionCount.close();
+					conditionExists = 0;
+					break;
+				}
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		// Request condition description
+		while (true) {
+			if (conditionExists == 0) {
+				System.out.print("Please enter condition description: ");
+				keyboard = new Scanner(System.in);
+				condDes = keyboard.nextLine();
+				if (condDes.length() > 1024)
+					System.out.println("Description too long");
+				else {
+					try {
+						addCondition = dbConn
+								.prepareStatement(queryNewCondition);
+						addCondition.setInt(1, condition);
+						addCondition.setString(2, condDes);
+						addCondition.executeUpdate();
+						System.out.println("New driving conditions added");
+						break;
+					} catch (SQLException e) {
+						System.out.println(e.getMessage());
+					}
+				}
+			}
+		}
+		// Insertion restriction
+		try {
+			addRestriction = dbConn.prepareStatement(queryNewRestriction);
+			addRestriction.setString(1, licence_no);
+			addRestriction.setInt(2, condition);
+			addRestriction.executeUpdate();
+			System.out.println("Restriction added");
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
