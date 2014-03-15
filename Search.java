@@ -8,7 +8,7 @@ public class Search {
 	public static void searchEngine(Connection dbConn) {
 		PreparedStatement DriverByName, DriverByLNo, TicketsBySin; 
 		PreparedStatement TicketsByLNo, VehicleHist;
-		ResutlSet driver, tickets, history;
+		ResultSet driver, tickets, history;
 		Scanner keyboard;
 		int selection;
 
