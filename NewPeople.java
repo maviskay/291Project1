@@ -145,7 +145,7 @@ public class NewPeople {
 		if (requestLicence != 1)
 			return;
 		else
-			System.out.println("Does this person have a licence");
+			System.out.print("Does this person have a licence: ");
 		while (true) {
 			keyboard = new Scanner(System.in);
 			hasLicence = keyboard.nextLine();
@@ -175,7 +175,7 @@ public class NewPeople {
 								licenceCount.close();
 								NewLicence.licenceRegistration(dbConn, sin,
 										licenceNum, 1);
-								break;
+								return;
 							} else
 								System.out
 										.println("Licence already exists");

@@ -7,9 +7,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.io.FileInputStream;
 
+// TODO: licence extras - driving condition & restrictions
+
 public class NewLicence {
 	// Registers new licence
-    public static void licenceRegistration(Connection dbConn, String sin, String licence_no, int personAdded) {
+	public static void licenceRegistration(Connection dbConn, String sin,
+			String licence_no, int personAdded) {
 		FileInputStream photoArray = null;
 		Scanner keyboard;
 		PreparedStatement checkLicence, checkSin, addLicence;
@@ -38,24 +41,25 @@ public class NewLicence {
 			sin = keyboard.nextLine();
 			if (sin.length() > 15)
 				System.out.println("Sin number invalid");
-			else{
+			else {
 				padding = 15 - sin.length();
 				for (int i = 0; i < padding; i++)
 					sin += " ";
-				try{
+				try {
 					checkSin = dbConn.prepareStatement(querySinCount);
 					checkSin.setString(1, sin);
 					sinCount = checkSin.executeQuery();
 					sinCount.next();
-					if (sinCount.getInt(1) != 0){					
+					if (sinCount.getInt(1) != 0) {
 						sinCount.close();
 						checkLicence = dbConn.prepareStatement(querySinLicence);
 						checkLicence.setString(1, sin);
 						licenceExist = checkLicence.executeQuery();
 						licenceExist.next();
-						if (licenceExist.getInt(1) != 0){					
+						if (licenceExist.getInt(1) != 0) {
 							licenceExist.close();
-							System.out.println("This person already has a licence");
+							System.out
+									.println("This person already has a licence");
 							sin = "-1";
 						} else
 							break;
@@ -64,7 +68,7 @@ public class NewLicence {
 						NewPeople.addPeople(dbConn, sin, 0);
 						break;
 					}
-				} catch (SQLException e){
+				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
 			}
@@ -74,45 +78,46 @@ public class NewLicence {
 			// Licence number already given
 			if (!licence_no.equalsIgnoreCase("-1"))
 				break;
-		    System.out.print("Please enter the licence number: ");
+			System.out.print("Please enter the licence number: ");
 			keyboard = new Scanner(System.in);
 			licence_no = keyboard.nextLine();
 			if (licence_no.length() > 15)
 				System.out.println("Licence number invalid");
-			else{
+			else {
 				padding = 15 - licence_no.length();
 				for (int i = 0; i < padding; i++)
 					licence_no += " ";
-				try{
+				try {
 					checkLicence = dbConn.prepareStatement(queryLicenceCount);
 					checkLicence.setString(1, licence_no);
 					licenceCount = checkLicence.executeQuery();
 					licenceCount.next();
-					if (licenceCount.getInt(1) != 0){					
+					if (licenceCount.getInt(1) != 0) {
 						licenceCount.close();
 						System.out.println("Licence already exists");
 						licence_no = "-1";
 					} else
 						break;
-				} catch (SQLException e){
+				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
 			}
 		}
 		// Requests for class
 		while (true) {
-		    System.out.print("Please enter the class: ");
+			System.out.print("Please enter the class: ");
 			keyboard = new Scanner(System.in);
 			classVal = keyboard.nextLine();
 			if (classVal.length() > 10)
 				System.out.println("Class entered is too long");
-			else{
+			else {
 				break;
 			}
 		}
 		// Request photo
 		while (true) {
-		    System.out.print("Please enter the drivers photo in current directory: ");
+			System.out
+					.print("Please enter the drivers photo in current directory: ");
 			keyboard = new Scanner(System.in);
 			photoFile = keyboard.nextLine();
 			path += "/" + photoFile;
@@ -126,18 +131,19 @@ public class NewLicence {
 		}
 		// Request expiring date
 		while (true) {
-		    System.out.print("Please enter the expiry date (YYYY-MM-DD): ");
+			System.out.print("Please enter the expiry date (YYYY-MM-DD): ");
 			keyboard = new Scanner(System.in);
 			expireDate = keyboard.nextLine();
-			try{
+			try {
 				formatDate.setLenient(false);
 				exDate = formatDate.parse(expireDate);
 			} catch (ParseException e) {
 				System.out.println("Expiry date not valid");
 				continue;
-			}			
+			}
 			if (utilDate.after(exDate))
-				System.out.println("Expiry date cannot be earlier than current date");
+				System.out
+						.println("Expiry date cannot be earlier than current date");
 			else
 				break;
 		}
@@ -162,5 +168,4 @@ public class NewLicence {
 		}
 	}
 }
-
 
