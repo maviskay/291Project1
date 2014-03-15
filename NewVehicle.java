@@ -9,11 +9,11 @@ public class NewVehicle{
 		PreparedStatement checkSerial, findPeople, addVehicle;
 		ResultSet serialCount, peopleCount;
 		Scanner keyboard;
-		String serialNum, maker, model, color, ownerID, primary;
+		String serialNum, maker, model, color, ownerID = null, primary = " ";
 		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
 		String queryPeopleCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?)";
-		int year, typeID, padding;
+		int year, typeID, padding, ownerCount, primOwner = 0;
 		int currYear = Calendar.getInstance().get(Calendar.YEAR);
 
 		// Requests for serial number
@@ -110,50 +110,71 @@ public class NewVehicle{
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-		// Checks to see if owner exists
+		// Asks for number of owners
 		System.out.println("Please register owner of the vehicle");
 		while (true) {
-			System.out.print("Please enter the owner id: ");
-			keyboard = new Scanner(System.in);
-			ownerID = keyboard.nextLine();
-			if (ownerID.length() > 15)
-				System.out.println("Owner id invalid");
-			else{
-				padding = 15 - ownerID.length();
-				for (int i = 0; i < padding; i++)
-					ownerID += " ";
-				try {
-					findPeople = dbConn.prepareStatement(queryPeopleCount);
-					findPeople.setString(1, ownerID);
-					peopleCount = findPeople.executeQuery();
-					peopleCount.next();
-					if (peopleCount.getInt(1) != 0){					
-						peopleCount.close();
-						System.out.println("Person does not exist, please enter information of owner");
-						// Person does not exist, request person info
-						NewPeople.addPeople(dbConn, ownerID);
-						break;
-					}
-				} catch (SQLException e){
-					System.out.println(e.getMessage());
-				}
-				break;	
+			try {
+				System.out.print("How many people own this vehicle: ");
+				keyboard = new Scanner(System.in);
+				ownerCount = keyboard.nextInt();
+				break;
+			} catch (InputMismatchException e) {
+			    System.out.println("Invalid number of owners");
+			    continue;
 			}
 		}
-		// Check if primary owner
+		// Checks to see if owner exists
 		while (true) {
-			System.out.print("Is this owner a primary owner: ");
-			keyboard = new Scanner(System.in);
-			primary = keyboard.nextLine();
-			if (primary.length() != 1)
-				System.out.println("Primary owner status invalid");
-			else if ((primary.contains("y")) || (primary.contains("n")))
-				break;
-		    else
-				System.out.println("Primary owner status invalid");
+			int j = 0;
+			primOwner = 0;
+			while (j < ownerCount) {
+				System.out.print("Please enter the owner id: ");
+				keyboard = new Scanner(System.in);
+				ownerID = keyboard.nextLine();
+				if (ownerID.length() > 15)
+					System.out.println("Owner id invalid");
+				else {
+					padding = 15 - ownerID.length();
+					for (int i = 0; i < padding; i++)
+						ownerID += " ";
+					try {
+						findPeople = dbConn.prepareStatement(queryPeopleCount);
+						findPeople.setString(1, ownerID);
+						peopleCount = findPeople.executeQuery();
+						peopleCount.next();
+						if (peopleCount.getInt(1) != 0){					
+							peopleCount.close();
+							System.out.println("Person does not exist, please enter information of owner");
+							// Person does not exist, request person info
+							NewPeople.addPeople(dbConn, ownerID);
+						}
+					} catch (SQLException e){
+						System.out.println(e.getMessage());
+					}
+					// Check if primary owner
+					while (true) {
+						if (primary.contains("y") && primary.length() == 1)
+							break;
+						System.out.print("Is this owner a primary owner: ");
+						keyboard = new Scanner(System.in);
+						primary = keyboard.nextLine();
+						if (primary.length() != 1)
+							System.out.println("Primary owner status invalid");
+						else if (primary.contains("n"))
+							break;
+						else if (primary.contains("y")) {
+							primOwner = 1;
+							break;
+						} else
+							System.out.println("Primary owner status invalid");
+					}
+					// Inserts owner to database
+					NewOwner.addOwner(dbConn, serialNum, ownerID, primary);
+					j++;
+				}
+			}
+			break;
 		}
-		// Inserts owner to database
-		NewOwner.addOwner(dbConn, serialNum, ownerID, primary);
 	}
 
 	// Checks for vehicle type and returns type_id
