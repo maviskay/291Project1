@@ -60,7 +60,6 @@ public class Search {
 			String parameter) {
 		PreparedStatement searchDB;
 		ResultSet results;
-
 		try {
 			searchDB = dbConn.prepareStatement(query);
 			searchDB.setString(1, parameter);
@@ -118,13 +117,13 @@ public class Search {
 				System.out.println("Licence # : "
 						+ driver.getString("licence_no"));
 				System.out.println("Address: " + driver.getString("addr"));
-				System.out.println("Birthday: " + driver.getString("birthday"));
+				System.out.println("Birthday: " + driver.getDate("birthday"));
 				System.out.println("Driving class: "
 						+ driver.getString("class"));
 				System.out.println("Driving condition: "
-						+ driver.getString("r_rid"));
+						+ driver.getInt("r_rid"));
 				System.out.println("Licence expiring date: "
-						+ driver.getString("l.expiring_date"));
+						+ driver.getDate("l.expiring_date"));
 				System.out.println("\n");
 			}
 		} catch (SQLException e) {
@@ -137,13 +136,13 @@ public class Search {
 		ResultSet violation = null;
 		String queryCheckSin = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 		String queryCheckLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
-		String queryTicketsBySin = "SLEECT * FROM ticket WHERE violator_no = ?";
-		String queryTicketsByLNo = "SLEECT t.* FROM ticket t, drive_licence l WHERE l.sin = t.violator_no AND l.licence_no = ?";
+		String queryTicketsBySin = "SELECT * FROM ticket WHERE violator_no = ?";
+		String queryTicketsByLNo = "SELECT * FROM ticket t, drive_licence l WHERE l.sin = t.violator_no AND l.licence_no = ?";
 		int maxString = 1, incNum = 0, exists;
 		String sin = null, licence = null;
 
 		while (true) {
-			if (selection == 1) {
+			if (selection == 3) {
 				// Search for violation by sin
 				System.out.print("Please enter sin number of person: ");
 				sin = database.requestString(15, maxString, incNum);
@@ -153,7 +152,7 @@ public class Search {
 				} else {
 					break;
 				}
-			} else if (selection == 2) {
+			} else if (selection == 4) {
 				// Search for violation by licence number
 				System.out.print("Please enter licence number of person: ");
 				licence = database.requestString(15, maxString, incNum);
@@ -166,9 +165,9 @@ public class Search {
 				}
 			}
 		}
-		if (selection == 1) {
+		if (selection == 3) {
 			violation = searchDatabase(dbConn, queryTicketsBySin, sin);
-		} else if (selection == 2) {
+		} else if (selection == 4) {
 			violation = searchDatabase(dbConn, queryTicketsByLNo, licence);
 		}
 		try {
@@ -182,9 +181,9 @@ public class Search {
 				System.out.println("Officer: "
 						+ violation.getString("office_no"));
 				System.out.println("Violation type: "
-						+ violation.getString("vtype"));
+						+ violation.getInt("vtype"));
 				System.out.println("Violation date: "
-						+ violation.getString("vdate"));
+						+ violation.getTimestamp("vdate"));
 				System.out.println("Location: " + violation.getString("place"));
 				System.out.println("Comments: "
 						+ violation.getString("descriptions"));
@@ -223,9 +222,9 @@ public class Search {
 			history = searchHistory.executeQuery();
 			while (history.next()) {
 				System.out.println("Serial #: " + history.getString("v.serial_no"));
-				System.out.println("Transactions: " + history.getString("transCount"));
-				System.out.println("Average price: " + history.getString("avgPrice"));
-				System.out.println("Tickets: " + history.getString("ticCount"));
+				System.out.println("Transactions: " + history.getInt("transCount"));
+				System.out.println("Average price: " + history.getInt("avgPrice"));
+				System.out.println("Tickets: " + history.getInt("ticCount"));
 				System.out.println("\n");
 			}
 		} catch (SQLException e) {
