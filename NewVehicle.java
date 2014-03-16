@@ -1,92 +1,52 @@
 import java.sql.*;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 import java.util.Calendar;
 
 public class NewVehicle {
 	// Registers new vehicle
 	public static void vehicleRegistration(Connection dbConn) {
-		PreparedStatement checkSerial, findPeople, addVehicle;
-		ResultSet serialCount, peopleCount;
-		Scanner keyboard;
-		String serialNum, maker, model, color, ownerID = null;
+		PreparedStatement addVehicle;
 		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
-		String queryPeopleCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 		String queryNewVehicle = "INSERT INTO vehicle VALUES(?, ?, ?, ?, ?, ?)";
-		int year, typeID, padding, ownerCount, primOwner = 0;
+		int maxString = 1, varString = 0, noNum = 1, incNum = 0, exists = 0, typeID;
 		int currYear = Calendar.getInstance().get(Calendar.YEAR);
+		Double year;
+		String serialNum, maker, model, color;
 
 		// Requests for serial number
 		while (true) {
 			System.out.print("Please enter the vehicle's serial number: ");
-			keyboard = new Scanner(System.in);
-			serialNum = keyboard.nextLine();
-			if (serialNum.length() > 15)
-				System.out.println("Serial number invalid");
-			else {
-				padding = 15 - serialNum.length();
-				for (int i = 0; i < padding; i++)
-					serialNum += " ";
-				try {
-					checkSerial = dbConn.prepareStatement(querySerialCount);
-					checkSerial.setString(1, serialNum);
-					serialCount = checkSerial.executeQuery();
-					serialCount.next();
-					if (serialCount.getInt(1) != 0) {
-						serialCount.close();
-						System.out.println("Vehicle already exists");
-					} else
-						break;
-				} catch (SQLException e) {
-					System.out.println(e.getMessage());
-				}
+			serialNum = database.requestString(15, maxString, incNum);
+			exists = database.checkExistence(dbConn, querySerialCount,
+					serialNum);
+			if (exists == 1) {
+				System.out.println("Vehicle already exists");
+			} else {
+				break;
 			}
 		}
+
 		// Requests for vehicle make
-		while (true) {
-			System.out.print("Please enter make of vehicle: ");
-			keyboard = new Scanner(System.in);
-			maker = keyboard.nextLine();
-			if (maker.length() > 20)
-				System.out.println("Make of vehicle invalid");
-			else
-				break;
-		}
+		System.out.print("Please enter make of vehicle: ");
+		maker = database.requestString(20, varString, noNum);
+
 		// Requests for vehicle model
-		while (true) {
-			System.out.print("Please enter model of vehicle: ");
-			keyboard = new Scanner(System.in);
-			model = keyboard.nextLine();
-			if (model.length() > 20)
-				System.out.println("Model of vehicle invalid");
-			else
-				break;
-		}
+		System.out.print("Please enter model of vehicle: ");
+		model = database.requestString(20, varString, noNum);
+		
 		// Requests for vehicle year
 		while (true) {
 			System.out.print("Please enter year of vehicle: ");
-			keyboard = new Scanner(System.in);
-			try {
-				year = keyboard.nextInt();
-				if (Integer.toString(year).length() != 4 || year > currYear)
-					System.out.println("Year of vehicle invalid");
-				else
-					break;
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid year");
-				continue;
-			}
-		}
-		// Requests for vehicle color
-		while (true) {
-			System.out.print("Please enter color of vehicle: ");
-			keyboard = new Scanner(System.in);
-			color = keyboard.nextLine();
-			if (color.length() > 10)
-				System.out.println("Color of vehicle invalid");
-			else
+			year = database.requestInt(4, 0);
+			if (year.intValue() > currYear) {
+				System.out.println("Year of vehicle invalid");
+			} else
 				break;
 		}
+		
+		// Requests for vehicle color
+		System.out.print("Please enter color of vehicle: ");
+		color = database.requestString(10, varString, noNum);
+		
 		// Requests for vehicle type
 		while (true) {
 			typeID = checkVehicleType(dbConn);
@@ -96,13 +56,14 @@ public class NewVehicle {
 			else
 				break;
 		}
+		
 		// Inserts vehicle to database
 		try {
 			addVehicle = dbConn.prepareStatement(queryNewVehicle);
 			addVehicle.setString(1, serialNum);
 			addVehicle.setString(2, maker);
 			addVehicle.setString(3, model);
-			addVehicle.setInt(4, year);
+			addVehicle.setDouble(4, year);
 			addVehicle.setString(5, color);
 			addVehicle.setInt(6, typeID);
 			addVehicle.executeUpdate();
@@ -111,121 +72,34 @@ public class NewVehicle {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		
 		// Asks for number of owners
-		System.out.println("Please register owner of the vehicle");
-		while (true) {
-			try {
-				System.out.print("How many people own this vehicle: ");
-				keyboard = new Scanner(System.in);
-				ownerCount = keyboard.nextInt();
-				if (ownerCount == 0)
-					System.out.println("Vehicle needs at least one owner");
-				else
-					break;
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid number of owners");
-				continue;
-			}
-		}
-		// Adds owner
-		while (true) {
-			int j = 0;
-			primOwner = 0;
-
-			System.out.print("Please enter the primary owner id: ");
-			keyboard = new Scanner(System.in);
-			ownerID = keyboard.nextLine();
-			if (ownerID.length() > 15)
-				System.out.println("Owner id invalid");
-			else {
-				padding = 15 - ownerID.length();
-				for (int i = 0; i < padding; i++)
-					ownerID += " ";
-				try {
-					findPeople = dbConn.prepareStatement(queryPeopleCount);
-					findPeople.setString(1, ownerID);
-					peopleCount = findPeople.executeQuery();
-					peopleCount.next();
-					if (peopleCount.getInt(1) == 0) {
-						peopleCount.close();
-						System.out
-								.println("Person does not exist, please enter information of owner");
-						// Person does not exist, request person info
-						NewPeople.addPeople(dbConn, ownerID, 1);
-					}
-					NewOwner.addOwner(dbConn, serialNum, ownerID, "y");
-				} catch (SQLException e) {
-					System.out.println(e.getMessage());
-				}
-				while (j < ownerCount - 1) {
-					System.out.print("Please enter the owner id: ");
-					keyboard = new Scanner(System.in);
-					ownerID = keyboard.nextLine();
-					if (ownerID.length() > 15)
-						System.out.println("Owner id invalid");
-					else {
-						padding = 15 - ownerID.length();
-						for (int i = 0; i < padding; i++)
-							ownerID += " ";
-						try {
-							findPeople = dbConn
-									.prepareStatement(queryPeopleCount);
-							findPeople.setString(1, ownerID);
-							peopleCount = findPeople.executeQuery();
-							peopleCount.next();
-							if (peopleCount.getInt(1) == 0) {
-								peopleCount.close();
-								System.out
-										.println("Person does not exist, please enter information of owner");
-								// Person does not exist, request person info
-								NewPeople.addPeople(dbConn, ownerID, 1);
-							}
-						} catch (SQLException e) {
-							System.out.println(e.getMessage());
-						}
-						// Inserts owner to database
-						NewOwner.addOwner(dbConn, serialNum, ownerID, "n");
-						j++;
-					}
-				}
-				break;
-			}
-		}
+		System.out.println("Please register owners of the vehicle");
+		NewOwner.numOwner(dbConn, serialNum);
 	}
 
 	// Checks for vehicle type and returns type_id
 	public static int checkVehicleType(Connection dbConn) {
 		PreparedStatement findType;
 		ResultSet typeResult;
-		Scanner keyboard;
-		String type;
 		String queryTypeID = "SELECT type_id FROM vehicle_type WHERE type = ?";
-		int padding, typeID = -1;
+		String type;
+		int maxString = 1, noNum = 1, typeID = -1;
 
 		System.out.print("Please enter type of vehicle: ");
-		keyboard = new Scanner(System.in);
-		type = keyboard.nextLine();
-		padding = 10 - type.length();
-		if (type.length() > 10)
-			return -1;
-		else {
-			// Padding for char(10) of type
-			for (int i = 0; i < padding; i++)
-				type += " ";
-			try {
-				// Assume all vehicle types are already in database
-				findType = dbConn.prepareStatement(queryTypeID);
-				findType.setString(1, type);
-				typeResult = findType.executeQuery();
-				while (typeResult.next())
-					typeID = typeResult.getInt("type_id");
-				typeResult.close();
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-			}
+		type = database.requestString(10, maxString, noNum);
+		try {
+			// Assume all vehicle types are already in database
+			findType = dbConn.prepareStatement(queryTypeID);
+			findType.setString(1, type);
+			typeResult = findType.executeQuery();
+			while (typeResult.next())
+				typeID = typeResult.getInt("type_id");
+			typeResult.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 		}
 		return typeID;
 	}
 }
-
 

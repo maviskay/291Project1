@@ -8,123 +8,61 @@ import java.util.InputMismatchException;
 public class NewPeople {
 	// Registers new person
 	public static void addPeople(Connection dbConn, String sin, int requestLicence) {
-		PreparedStatement addPerson, findLicence;
-		ResultSet licenceCount;
-		Scanner keyboard;
-		String name, heightString[], weightString[], eyeColor, hairColor, address, gender, birthday, licenceNum, hasLicence;
+		int maxString = 1, varString = 0, noNum = 1, incNum = 0;
+		String name, eyeColor, hairColor, address, gender;
 		Double height, weight;
-		int padding;
-		java.util.Date utilDate = new java.util.Date();
-		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.Date bDate = new java.util.Date();
-		;
-		java.sql.Date bDay;
+		java.util.Date birthday = new java.util.Date();
+		java.util.Date currDate = new java.util.Date();
+		java.sql.Date bDate;
 		String queryNewPeople = "INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		String queryLicenceCount = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
+		PreparedStatement addPerson;
 
 		// Requests for name
-		while (true) {
-			System.out.print("Please enter name of person: ");
-			keyboard = new Scanner(System.in);
-			name = keyboard.nextLine();
-			if (name.length() > 40)
-				System.out.println("Name of person invalid");
-			else
-				break;
-		}
+		System.out.print("Please enter name of person: ");
+		name = database.requestString(40, varString, noNum);
+		
 		// Requests for height
-		while (true) {
-			try {
-				System.out.print("Please enter height of person: ");
-				keyboard = new Scanner(System.in);
-				height = keyboard.nextDouble();
-				heightString = height.toString().split("\\.");
-				if (heightString[0].length() > 3
-						|| heightString[1].length() > 2)
-					System.out.println("Height invalid");
-				else
-					break;
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid option");
-			}
-		}
+		System.out.print("Please enter height of person: ");
+		height = database.requestInt(3, 2);
+		
 		// Requests for weight
-		while (true) {
-			try {
-				System.out.print("Please enter weight of person: ");
-				keyboard = new Scanner(System.in);
-				weight = keyboard.nextDouble();
-				weightString = weight.toString().split("\\.");
-				if (weightString[0].length() > 3
-						|| weightString[1].length() > 2)
-					System.out.println("Weight invalid");
-				else
-					break;
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid option");
-			}
-		}
+		System.out.print("Please enter weight of person: ");
+		weight = database.requestInt(3, 2);
+		
 		// Requests for eye color
-		while (true) {
-			System.out.print("Please enter eye color of person: ");
-			keyboard = new Scanner(System.in);
-			eyeColor = keyboard.nextLine();
-			if (eyeColor.length() > 10)
-				System.out.println("Eye color invalid");
-			else
-				break;
-		}
+		System.out.print("Please enter eye color of person: ");
+		eyeColor = database.requestString(10, varString, noNum);
+		
 		// Requests for hair color
-		while (true) {
-			System.out.print("Please enter hair color of person: ");
-			keyboard = new Scanner(System.in);
-			hairColor = keyboard.nextLine();
-			if (hairColor.length() > 10)
-				System.out.println("Hair color invalid");
-			else
-				break;
-		}
+		System.out.print("Please enter hair color of person: ");
+		hairColor = database.requestString(10, varString, noNum);
+		
 		// Requests for address
-		while (true) {
-			System.out.print("Please enter address of person: ");
-			keyboard = new Scanner(System.in);
-			address = keyboard.nextLine();
-			if (address.length() > 50)
-				System.out.println("Address invalid");
-			else
-				break;
-		}
+		System.out.print("Please enter address of person: ");
+		address = database.requestString(50, varString, incNum);
+		
 		// Requests for gender
 		while (true) {
 			System.out.print("Please enter gender of person: ");
-			keyboard = new Scanner(System.in);
-			gender = keyboard.nextLine();
-			if (gender.length() != 1)
-				System.out.println("Gender invalid");
-			else if ((gender.equalsIgnoreCase("f")) || (gender.equals("m")))
+			gender = database.requestString(1, maxString, noNum);
+			if ((gender.equalsIgnoreCase("f")) || (gender.equals("m")))
 				break;
 			else
 				System.out.println("Gender invalid");
 		}
+		
 		// Requests for birthday
 		while (true) {
 			System.out.print("Please enter birthday of person (YYYY-MM-DD): ");
-			keyboard = new Scanner(System.in);
-			birthday = keyboard.nextLine();
-			try {
-				formatDate.setLenient(false);
-				bDate = formatDate.parse(birthday);
-			} catch (ParseException e) {
-				System.out.println("Birthday not valid");
-				continue;
-			}
-			if (bDate.after(utilDate))
+			birthday = database.requestDate();
+			if (birthday.after(currDate))
 				System.out.println("Birthday cannot be in the future");
 			else
 				break;
 		}
-		bDay = new java.sql.Date(bDate.getTime());
-		// Inserts person to database
+		bDate = new java.sql.Date(birthday.getTime());
+		
+		// Insert person to database
 		try {
 			addPerson = dbConn.prepareStatement(queryNewPeople);
 			addPerson.setString(1, sin);
@@ -135,59 +73,18 @@ public class NewPeople {
 			addPerson.setString(6, hairColor);
 			addPerson.setString(7, address);
 			addPerson.setString(8, gender);
-			addPerson.setDate(9, bDay);
+			addPerson.setDate(9, bDate);
 			addPerson.executeUpdate();
 			System.out.println("Person added to the database");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 
-		if (requestLicence != 1)
-			return;
-		else
-			System.out.print("Does this person have a licence: ");
-		while (true) {
-			keyboard = new Scanner(System.in);
-			hasLicence = keyboard.nextLine();
-			if (hasLicence.length() != 1){
-				System.out
-						.println("Selection invalid\n Please enter 'y' or 'n': ");
-			} else if (hasLicence.contains("y")) {
-				// Check to see if driver licence exists
-				while (true) {
-					System.out.print("Please enter licence number: ");
-					keyboard = new Scanner(System.in);
-					licenceNum = keyboard.nextLine();
-					if (licenceNum.length() > 15)
-						System.out.println("Licence number invalid");
-					else {
-						padding = 15 - licenceNum.length();
-						for (int i = 0; i < padding; i++)
-							licenceNum += " ";
-						try {
-							findLicence = dbConn
-									.prepareStatement(queryLicenceCount);
-							findLicence.setString(1, licenceNum);
-							licenceCount = findLicence.executeQuery();
-							licenceCount.next();
-							if (licenceCount.getInt(1) == 0) {
-								// Registers new licence
-								licenceCount.close();
-								NewLicence.licenceRegistration(dbConn, sin,
-										licenceNum, 1);
-								return;
-							} else
-								System.out
-										.println("Licence already exists");
-						} catch (SQLException e) {
-							System.out.println(e.getMessage());
-						}
-					}
-				}
-			} else
-				break;
-		}
+		// Checks if person has licence
+		if (requestLicence == 1)
+			NewLicence.ownsLicence(dbConn, sin);
 	}
 }
+
 
 
