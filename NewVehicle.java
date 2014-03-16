@@ -36,7 +36,7 @@ public class NewVehicle {
 		// Requests for vehicle year
 		while (true) {
 			System.out.print("Please enter year of vehicle: ");
-			year = database.requestInt(4, 0);
+			year = database.requestInt(4, 1);
 			if (year.intValue() > currYear) {
 				System.out.println("Year of vehicle invalid");
 			} else
@@ -102,4 +102,6 @@ public class NewVehicle {
 		return typeID;
 	}
 }
+
+
 

@@ -144,7 +144,6 @@ public class NewLicence {
 			System.out.println(e.getMessage());
 		}
 
-		
 		// Check if person has conditions
 		while (true) {
 			System.out.print("Does this person have any special conditions (y or n)? ");
@@ -159,7 +158,7 @@ public class NewLicence {
 		
 		// Request drive condition
 		System.out.print("Please enter the condition id: ");
-		condition = database.requestInt(2, 0).intValue();
+		condition = database.requestInt(2, 1).intValue();
 		exists = database.checkExistence(dbConn, queryConditionCount, condition);
 		
 		// Request condition description

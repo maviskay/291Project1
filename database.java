@@ -160,9 +160,7 @@ public class database {
 			try {
 				number = keyboard.nextDouble();
 				numberString = number.toString().split("\\.");
-				if (numberString[0].length() > before
-						|| numberString[1].length() > after
-						|| numberString[0].length() <= 0) {
+				if (numberString[0].length() > before || numberString[1].length() > after || numberString[0].length() <= 0) {
 					System.out.print("Input invalid, please try again: ");
 				} else
 					return number;

@@ -10,7 +10,7 @@ public class NewOwner {
 		int maxString = 1, incNum = 0, ownerCount, exists;
 		
 		System.out.print("How many people own this vehicle: ");
-		ownerCount = database.requestInt(3, 0).intValue();
+		ownerCount = database.requestInt(3, 1).intValue();
 		
 		// Adds owner
 		for (int i = 0; i < ownerCount; i++) {

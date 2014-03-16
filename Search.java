@@ -77,7 +77,7 @@ public class Search {
 		ResultSet driver = null;
 		String queryCheckName = "SELECT COUNT(name) FROM people WHERE name = ?";
 		String queryCheckLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
-		String queryDriverByName = "SELECT p.name, l.licence_no, p.addr, p.birthday, l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r WHERE p.sin = l.sin AND l.licence_no = r.licence_no AND p.name = ?";
+		String queryDriverByName = "SELECT p.name, l.licence_no, p.addr, p.birthday, l.class, r.r_id, c.description, l.expiring_date FROM people p, drive_licence l, restriction r, driving_condition c WHERE p.sin = l.sin AND l.licence_no = r.licence_no AND r.r_id = c.c_id AND p.name = ?";
 		String queryDriverByLNo = "SELECT p.name, l.licence_no, p.addr, p.birthday,l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r WHERE p.sin = l.sin AND l.licence_no = r.licence_no AND l.licence_no = ?";
 		String name = null, licence = null;
 		int maxString = 1, varString = 0, noNum = 1, incNum = 0, exists;
@@ -121,7 +121,9 @@ public class Search {
 				System.out.println("Driving class: "
 						+ driver.getString("class"));
 				System.out.println("Driving condition: "
-						+ driver.getInt("r_rid"));
+						+ driver.getInt("r_id"));
+				System.out.println("Condition: "
+						+ driver.getInt("description"));
 				System.out.println("Licence expiring date: "
 						+ driver.getDate("l.expiring_date"));
 				System.out.println("\n");
@@ -199,7 +201,7 @@ public class Search {
 		PreparedStatement searchHistory;
 		ResultSet history;
 		String queryCheckVehicle = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
-		String queryVehicleHist = "SELECT v.serial_no, COUNT(DISTINCT s.transaction_id) AS transCount, AVG(s.price) AS avgPrice, COUNT(DISTINCT t.ticket_no) AS ticCount FROM vehicle v, auto_sale s, ticket t WHERE s.vehicle_id (+)= ? AND t.vehicle_id (+)= ? GROUP BY ?";
+		String queryVehicleHist = "SELECT v.serial_no, COUNT(DISTINCT s.transaction_id) AS transCount, AVG(s.price) AS avgPrice, COUNT(DISTINCT t.ticket_no) AS ticCount FROM vehicle v, auto_sale s, ticket t WHERE s.vehicle_id (+)= ? AND t.vehicle_id (+)= ? GROUP BY v.serial_no";
 		String serialNum;
 		int maxString = 1, incNum = 0, exists;
 		
@@ -218,7 +220,6 @@ public class Search {
 			searchHistory = dbConn.prepareStatement(queryVehicleHist);
 			searchHistory.setString(1, serialNum);
 			searchHistory.setString(2, serialNum);
-			searchHistory.setString(3, serialNum);
 			history = searchHistory.executeQuery();
 			while (history.next()) {
 				System.out.println("Serial #: " + history.getString("v.serial_no"));

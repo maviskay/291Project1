@@ -60,7 +60,7 @@ public class VehicleTransaction {
 
 		// Asks for number of sellers
 		System.out.println("How many people are selling this vehicle? ");
-		sellerCount = database.requestInt(3, 0).intValue();
+		sellerCount = database.requestInt(3, 1).intValue();
 		while (i < sellerCount) {
 			if (i == 0) {
 				System.out.print("Please enter the primary seller's SIN: ");
@@ -82,7 +82,7 @@ public class VehicleTransaction {
 		
 		// Asks for number of buyers
 		System.out.println("How many people are buying this vehicle? ");
-		buyerCount = database.requestInt(3, 0).intValue();
+		buyerCount = database.requestInt(3, 1).intValue();
 		i = 0;
 		while (i < buyerCount) {
 			if (i == 0) {
