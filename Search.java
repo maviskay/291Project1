@@ -113,7 +113,7 @@ public class Search {
 		}
 		try {
 			while (driver.next()) {
-				System.out.println("Name: " + driver.getString("name"));
+				System.out.println("\nName: " + driver.getString("name"));
 				System.out.println("Licence # : "
 						+ driver.getString("licence_no"));
 				System.out.println("Address: " + driver.getString("addr"));
@@ -125,7 +125,7 @@ public class Search {
 				System.out.println("Condition: "
 						+ driver.getInt("description"));
 				System.out.println("Licence expiring date: "
-						+ driver.getDate("l.expiring_date"));
+						+ driver.getDate("expiring_date"));
 				System.out.println("\n");
 			}
 		} catch (SQLException e) {
@@ -174,7 +174,7 @@ public class Search {
 		}
 		try {
 			while (violation.next()) {
-				System.out.println("Ticket #: "
+				System.out.println("\nTicket #: "
 						+ violation.getString("ticket_no"));
 				System.out.println("Violator: "
 						+ violation.getString("violator_no"));
@@ -222,7 +222,7 @@ public class Search {
 			searchHistory.setString(2, serialNum);
 			history = searchHistory.executeQuery();
 			while (history.next()) {
-				System.out.println("Serial #: " + history.getString("v.serial_no"));
+				System.out.println("\nSerial #: " + history.getString("v.serial_no"));
 				System.out.println("Transactions: " + history.getInt("transCount"));
 				System.out.println("Average price: " + history.getInt("avgPrice"));
 				System.out.println("Tickets: " + history.getInt("ticCount"));
