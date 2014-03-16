@@ -27,17 +27,17 @@ public class NewVehicle {
 
 		// Requests for vehicle make
 		System.out.print("Please enter make of vehicle: ");
-		maker = database.requestString(20, varString, noNum);
+		maker = database.requestString(20, varString, incNum);
 
 		// Requests for vehicle model
 		System.out.print("Please enter model of vehicle: ");
-		model = database.requestString(20, varString, noNum);
+		model = database.requestString(20, varString, incNum);
 		
 		// Requests for vehicle year
 		while (true) {
 			System.out.print("Please enter year of vehicle: ");
 			year = database.requestInt(4, 1);
-			if (year.intValue() > currYear) {
+			if (year.intValue() > currYear || year.toString().length() != 4) {
 				System.out.println("Year of vehicle invalid");
 			} else
 				break;

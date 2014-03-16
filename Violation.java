@@ -13,7 +13,7 @@ public class Violation {
 		PreparedStatement addTicket;
 		String queryTicketCount = "SELECT COUNT(*) FROM ticket";
 		String queryPersonCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
-		String queryHasLicence = "SELECT COUNT(sin) FROM driving_licence WHERE sin = ?";
+		String queryHasLicence = "SELECT COUNT(sin) FROM drive_licence WHERE sin = ?";
 		String queryIsPrimary = "SELECT COUNT(owner_id) FROM owner WHERE owner_id = ? AND vehicle_id = ?";
 		String querySerialCount = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
 		String queryTicketType = "SELECT COUNT(vtype) FROM ticket_type WHERE vtype = ?";
@@ -40,7 +40,7 @@ public class Violation {
 		}
 		
 		// Check who the ticket should be issued to
-		System.out.println("Was the driver identified? ");
+		System.out.print("Was the driver identified? ");
 		driver = database.requestYorN();
 		
 		// Obtain violator id

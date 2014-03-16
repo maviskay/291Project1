@@ -6,14 +6,15 @@ public class NewOwner {
 	// Checks how many people own a vehicle
 	public static void numOwner(Connection dbConn, String serialNum) {
 		String queryPeopleCount = "SELECT COUNT(sin) FROM people WHERE sin = ?";
+		String queryOwnerCount = "SELECT COUNT(owner_id) FROM owner WHERE owner_id = ? AND vehicle_id = ?";
 		String ownerID;
-		int maxString = 1, incNum = 0, ownerCount, exists;
+		int maxString = 1, incNum = 0, ownerCount, exists, i = 0;
 		
 		System.out.print("How many people own this vehicle: ");
 		ownerCount = database.requestInt(3, 1).intValue();
 		
 		// Adds owner
-		for (int i = 0; i < ownerCount; i++) {
+		while (i < ownerCount) {
 			if (i == 0) {
 				System.out.print("Please enter the primary owner id: ");
 			} else {
@@ -26,13 +27,21 @@ public class NewOwner {
 						.println("Person does not exist, please enter information of owner");
 				// Person does not exist, request person info
 				NewPeople.addPeople(dbConn, ownerID, 1);
+			} else {
+				exists = database.checkExistence(dbConn, queryOwnerCount, ownerID, serialNum);
+				if (exists == 1){
+					System.out.println("This person already owns the vehicle");
+					continue;
+				}
 			}
 			if (i == 0) {
 				// Add primary owner
 				NewOwner.addOwner(dbConn, serialNum, ownerID, "y");
+				i++;
 			} else {
 				// Add regular owner
 				NewOwner.addOwner(dbConn, serialNum, ownerID, "n");
+				i++;
 			}
 		}
 	}
