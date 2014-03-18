@@ -63,7 +63,6 @@ public class Search {
 			ResultSet rs = statement.executeQuery(query.concat("'" + parameter + "'"));
 			return rs;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -112,14 +111,20 @@ public class Search {
 			if (driver.next()){
 				do {
 					System.out.println("\nName: " + driver.getString("name"));
-					System.out.println("Licence # : "
-							+ driver.getString("licence_no"));
+					if (driver.getString("licence_no") != null){
+						System.out.println("Licence # : "
+								+ driver.getString("licence_no"));
+					}
 					System.out.println("Address: " + driver.getString("addr"));
 					System.out.println("Birthday: " + driver.getDate("birthday"));
-					System.out.println("Driving class: "
-							+ driver.getString("class"));
-					System.out.println("Licence expiring date: "
-							+ driver.getDate("expiring_date"));
+					if (driver.getString("licence_no") != null){
+						System.out.println("Driving class: "
+								+ driver.getString("class"));
+						System.out.println("Licence expiring date: "
+								+ driver.getDate("expiring_date"));
+					} else {
+						System.out.println ("Person does not have a licence");
+					}
 					if (driver.getInt("r_id") != 0){
 						System.out.println("Driving condition: "
 								+ driver.getInt("r_id"));
