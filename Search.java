@@ -58,7 +58,16 @@ public class Search {
 
 	public static ResultSet searchDatabase(Connection dbConn, String query,
 			String parameter) {
-		PreparedStatement searchDB;
+		try {
+			Statement statement = dbConn.createStatement();
+			ResultSet rs = statement.executeQuery(query.concat("'" + parameter + "'"));
+			return rs;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		/*PreparedStatement searchDB;
 		ResultSet results;
 		try {
 			searchDB = dbConn.prepareStatement(query);
@@ -69,7 +78,7 @@ public class Search {
 			System.out.println(e.getMessage());
 		}
 		// Should not reach here
-		return null;
+		return null;*/
 	}
 
 	// Search for driver
@@ -78,7 +87,7 @@ public class Search {
 		String queryCheckName = "SELECT COUNT(name) FROM people WHERE name = ?";
 		String queryCheckLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
 		String queryDriverByName = "SELECT p.name, l.licence_no, p.addr, p.birthday, l.class, r.r_id, c.description, l.expiring_date FROM people p, drive_licence l, restriction r, driving_condition c WHERE p.sin = l.sin AND l.licence_no = r.licence_no AND r.r_id = c.c_id AND p.name = ?";
-		String queryDriverByLNo = "SELECT p.name, l.licence_no, p.addr, p.birthday,l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r WHERE p.sin = l.sin AND l.licence_no = r.licence_no AND l.licence_no = ?";
+		String queryDriverByLNo = "SELECT p.name, l.licence_no, p.addr, p.birthday,l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r WHERE p.sin = l.sin AND r.licence_no (+)= l.licence_no AND l.licence_no = ";
 		String name = null, licence = null;
 		int maxString = 1, varString = 0, noNum = 1, incNum = 0, exists;
 
@@ -121,19 +130,21 @@ public class Search {
 					System.out.println("Birthday: " + driver.getDate("birthday"));
 					System.out.println("Driving class: "
 							+ driver.getString("class"));
-					System.out.println("Driving condition: "
-							+ driver.getInt("r_id"));
-					System.out.println("Condition Description: "
-							+ driver.getInt("description"));
 					System.out.println("Licence expiring date: "
 							+ driver.getDate("expiring_date"));
+					if (driver.getInt("r_id") != 0){
+						System.out.println("Driving condition: "
+								+ driver.getInt("r_id"));
+						System.out.println("Condition Description: "
+								+ driver.getInt("description"));
+					}
 					System.out.println("\n");
 				} while(driver.next());
 			} else {
 				System.out.println("Person does not have licence");
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			System.out.println("\n");
 		}
 	}
 
@@ -245,4 +256,5 @@ public class Search {
 		}
 	}
 }
+
 
