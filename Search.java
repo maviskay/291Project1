@@ -67,18 +67,6 @@ public class Search {
 			e.printStackTrace();
 		}
 		return null;
-		/*PreparedStatement searchDB;
-		ResultSet results;
-		try {
-			searchDB = dbConn.prepareStatement(query);
-			searchDB.setString(1, parameter);
-			results = searchDB.executeQuery();
-			return results;
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-		// Should not reach here
-		return null;*/
 	}
 
 	// Search for driver
@@ -86,7 +74,7 @@ public class Search {
 		ResultSet driver = null;
 		String queryCheckName = "SELECT COUNT(name) FROM people WHERE name = ?";
 		String queryCheckLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
-		String queryDriverByName = "SELECT p.name, l.licence_no, p.addr, p.birthday, l.class, r.r_id, c.description, l.expiring_date FROM people p, drive_licence l, restriction r, driving_condition c WHERE p.sin = l.sin AND l.licence_no = r.licence_no AND r.r_id = c.c_id AND p.name = ?";
+		String queryDriverByName = "SELECT DISTINCT p.name, l.licence_no, p.addr, p.birthday, l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r, driving_condition c WHERE l.sin (+)= p.sin AND r.licence_no (+)= l.licence_no AND p.name = ";
 		String queryDriverByLNo = "SELECT p.name, l.licence_no, p.addr, p.birthday,l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r WHERE p.sin = l.sin AND r.licence_no (+)= l.licence_no AND l.licence_no = ";
 		String name = null, licence = null;
 		int maxString = 1, varString = 0, noNum = 1, incNum = 0, exists;
@@ -153,8 +141,8 @@ public class Search {
 		ResultSet violation = null;
 		String queryCheckSin = "SELECT COUNT(sin) FROM people WHERE sin = ?";
 		String queryCheckLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
-		String queryTicketsBySin = "SELECT * FROM ticket WHERE violator_no = ?";
-		String queryTicketsByLNo = "SELECT * FROM ticket t, drive_licence l WHERE l.sin = t.violator_no AND l.licence_no = ?";
+		String queryTicketsBySin = "SELECT * FROM ticket WHERE violator_no = ";
+		String queryTicketsByLNo = "SELECT * FROM ticket t, drive_licence l WHERE t.violator_no (+)= l.sin AND l.licence_no = ";
 		int maxString = 1, incNum = 0, exists;
 		String sin = null, licence = null;
 
@@ -199,7 +187,7 @@ public class Search {
 					System.out.println("Officer: "
 							+ violation.getString("office_no"));
 					System.out.println("Violation type: "
-							+ violation.getInt("vtype"));
+							+ violation.getString("vtype"));
 					System.out.println("Violation date: "
 							+ violation.getTimestamp("vdate"));
 					System.out.println("Location: " + violation.getString("place"));
@@ -217,10 +205,9 @@ public class Search {
 
 	// Search for vehicle history
 	public static void selectHistory(Connection dbConn) {
-		PreparedStatement searchHistory;
+		Statement searchHistory;
 		ResultSet history;
 		String queryCheckVehicle = "SELECT COUNT(serial_no) FROM vehicle WHERE serial_no = ?";
-		String queryVehicleHist = "SELECT v.serial_no, COUNT(DISTINCT s.transaction_id) AS transCount, AVG(s.price) AS avgPrice, COUNT(DISTINCT t.ticket_no) AS ticCount FROM vehicle v, auto_sale s, ticket t WHERE s.vehicle_id (+)= ? AND t.vehicle_id (+)= ? GROUP BY v.serial_no";
 		String serialNum;
 		int maxString = 1, incNum = 0, exists;
 		
@@ -234,12 +221,11 @@ public class Search {
 				break;
 			}
 		}
+		String queryVehicleHist = "SELECT v.serial_no, COUNT(DISTINCT s.transaction_id), AVG(s.price), COUNT(DISTINCT t.ticket_no) FROM vehicle v, auto_sale s, ticket t WHERE s.vehicle_id (+)= 'v." + serialNum + "' AND t.vehicle_id (+)= 'v." + serialNum + "' GROUP BY v.serial_no";
 		
 		try {
-			searchHistory = dbConn.prepareStatement(queryVehicleHist);
-			searchHistory.setString(1, serialNum);
-			searchHistory.setString(2, serialNum);
-			history = searchHistory.executeQuery();
+			searchHistory = dbConn.createStatement();
+			history = searchHistory.executeQuery(queryVehicleHist);
 			if (history.next()){
 				do {
 					System.out.println("\nSerial #: " + history.getString("v.serial_no"));
