@@ -59,7 +59,7 @@ public class VehicleTransaction {
 		saleDate = new java.sql.Date(sDate.getTime());
 
 		// Asks for number of sellers
-		System.out.println("How many people are selling this vehicle? ");
+		System.out.print("How many people are selling this vehicle? ");
 		sellerCount = database.requestInt(3, 1).intValue();
 		while (i < sellerCount) {
 			if (i == 0) {
@@ -68,7 +68,7 @@ public class VehicleTransaction {
 				System.out.print("Please enter the seller's SIN: ");
 			}
 			seller = database.requestString(15, maxString, incNum);
-			exists = database.checkExistence(dbConn, querySellerCount, seller);
+			exists = database.checkExistence(dbConn, querySellerCount, seller, serialNum);
 			if (exists == 0){
 				System.out.println("This person does not own the vehicle");
 			} else {
@@ -81,7 +81,7 @@ public class VehicleTransaction {
 		}	
 		
 		// Asks for number of buyers
-		System.out.println("How many people are buying this vehicle? ");
+		System.out.print("How many people are buying this vehicle? ");
 		buyerCount = database.requestInt(3, 1).intValue();
 		i = 0;
 		while (i < buyerCount) {
@@ -91,7 +91,7 @@ public class VehicleTransaction {
 				System.out.print("Please enter the buyer's SIN: ");
 			}
 			buyer = database.requestString(15, maxString, incNum);
-			exists = database.checkExistence(dbConn, queryBuyerCount, buyer);
+			exists = database.checkExistence(dbConn, queryBuyerCount, buyer, serialNum);
 			if (exists == 1){
 				System.out.println("This person already owns the vehicle");
 			} else {
@@ -128,5 +128,6 @@ public class VehicleTransaction {
 		}
 	}
 }
+
 
 

@@ -279,13 +279,13 @@ public class database {
 
 	// Remove person from owner table
 	public static void removeOwner(Connection dbConn, String query,
-			String parameter, String parameter2) {
+			String vehicle_id, String owner_id) {
 		PreparedStatement deleteOwner;
 
 		try {
 			deleteOwner = dbConn.prepareStatement(query);
-			deleteOwner.setString(1, parameter);
-			deleteOwner.setString(2, parameter2);
+			deleteOwner.setString(1, vehicle_id);
+			deleteOwner.setString(2, owner_id);
 			deleteOwner.executeQuery();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
