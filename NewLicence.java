@@ -131,14 +131,12 @@ public class NewLicence {
 			addLicence.setString(1, licence_no);
 			addLicence.setString(2, sin);
 			addLicence.setString(3, classVal);
-			addLicence.setBinaryStream(4, photoArray, photoArray.available());
+			addLicence.setBinaryStream(4, photoArray, (int) photo.length());
 			addLicence.setDate(5, issueDate);
 			addLicence.setDate(6, expireDate);
 			addLicence.executeUpdate();
 			System.out.println("Licence added to the database");
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} catch (NullPointerException e) {
 			System.out.println(e.getMessage());
