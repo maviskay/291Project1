@@ -127,7 +127,7 @@ public class database {
 
 		while (true) {
 			keyboard = new Scanner(System.in);
-			input = keyboard.nextLine().toLowerCase();
+			input = keyboard.nextLine();
 			if (input.length() > maxLength) {
 				System.out.print("Input invalid, please try again: ");
 			} else if (nonNum == 1 && input.matches(".*\\d+.*")) {
@@ -299,4 +299,5 @@ public class database {
 		return -1;
 	}
 }
+
 

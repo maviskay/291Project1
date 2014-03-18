@@ -37,7 +37,7 @@ public class NewVehicle {
 		while (true) {
 			System.out.print("Please enter year of vehicle: ");
 			year = database.requestInt(4, 1);
-			if (year.intValue() > currYear || year.toString().length() != 4) {
+			if (year.intValue() > currYear) {
 				System.out.println("Year of vehicle invalid");
 			} else
 				break;

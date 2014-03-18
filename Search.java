@@ -16,7 +16,7 @@ public class Search {
 			System.out.println("\t1: Driver info by name");
 			System.out.println("\t2: Driver info by licence number");
 			System.out.println("\t3: Violation info by driver sin");
-			System.out.println("\t4: Violation into by licence number");
+			System.out.println("\t4: Violation info by licence number");
 			System.out.println("\t5: Vehicle history by serial number");
 
 			keyboard = new Scanner(System.in);
@@ -73,7 +73,7 @@ public class Search {
 		ResultSet driver = null;
 		String queryCheckName = "SELECT COUNT(name) FROM people WHERE name = ?";
 		String queryCheckLicence = "SELECT COUNT(licence_no) FROM drive_licence WHERE licence_no = ?";
-		String queryDriverByName = "SELECT DISTINCT p.name, l.licence_no, p.addr, p.birthday, l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r, driving_condition c WHERE l.sin (+)= p.sin AND r.licence_no (+)= l.licence_no AND p.name = ";
+		String queryDriverByName = "SELECT DISTINCT p.name, l.licence_no, p.addr, p.birthday, l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r WHERE l.sin (+)= p.sin AND r.licence_no (+)= l.licence_no AND p.name = ";
 		String queryDriverByLNo = "SELECT p.name, l.licence_no, p.addr, p.birthday,l.class, r.r_id, l.expiring_date FROM people p, drive_licence l, restriction r WHERE p.sin = l.sin AND r.licence_no (+)= l.licence_no AND l.licence_no = ";
 		String name = null, licence = null;
 		int maxString = 1, varString = 0, noNum = 1, incNum = 0, exists;
@@ -129,7 +129,6 @@ public class Search {
 						System.out.println("Condition Description: "
 								+ driver.getInt("description"));
 					}
-					System.out.println("\n");
 				} while(driver.next());
 			} else {
 				System.out.println("Person does not have licence");
@@ -181,22 +180,25 @@ public class Search {
 		try {
 			if (violation.next()){
 				do {
-					System.out.println("\nTicket #: "
-							+ violation.getString("ticket_no"));
-					System.out.println("Violator: "
-							+ violation.getString("violator_no"));
-					System.out.println("Vehicle: "
-							+ violation.getString("vehicle_id"));
-					System.out.println("Officer: "
-							+ violation.getString("office_no"));
-					System.out.println("Violation type: "
-							+ violation.getString("vtype"));
-					System.out.println("Violation date: "
-							+ violation.getDate("vdate"));
-					System.out.println("Location: " + violation.getString("place"));
-					System.out.println("Comments: "
-							+ violation.getString("descriptions"));
-					System.out.println("\n");
+					if (violation.getString("ticket_no") != null){
+						System.out.println("\nTicket #: "
+								+ violation.getString("ticket_no"));
+						System.out.println("Violator: "
+								+ violation.getString("violator_no"));
+						System.out.println("Vehicle: "
+								+ violation.getString("vehicle_id"));
+						System.out.println("Officer: "
+								+ violation.getString("office_no"));
+						System.out.println("Violation type: "
+								+ violation.getString("vtype"));
+						System.out.println("Violation date: "
+								+ violation.getDate("vdate"));
+						System.out.println("Location: " + violation.getString("place"));
+						System.out.println("Comments: "
+								+ violation.getString("descriptions"));
+					} else {
+						System.out.println("Person does not have any violations");
+					}
 				} while(violation.next());
 			} else {
 				System.out.println("Person does not have any violations");
@@ -235,7 +237,6 @@ public class Search {
 					System.out.println("Transactions: " + history.getInt("transCount"));
 					System.out.println("Average price: " + history.getInt("avgPrice"));
 					System.out.println("Tickets: " + history.getInt("ticCount"));
-					System.out.println("\n");
 				} while(history.next());
 			} else {
 				System.out.println("Vehicle does not have any history");
@@ -245,5 +246,6 @@ public class Search {
 		}
 	}
 }
+
 
 
