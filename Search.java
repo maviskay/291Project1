@@ -112,21 +112,25 @@ public class Search {
 			driver = searchDatabase(dbConn, queryDriverByLNo, licence);
 		}
 		try {
-			while (driver.next()) {
-				System.out.println("\nName: " + driver.getString("name"));
-				System.out.println("Licence # : "
-						+ driver.getString("licence_no"));
-				System.out.println("Address: " + driver.getString("addr"));
-				System.out.println("Birthday: " + driver.getDate("birthday"));
-				System.out.println("Driving class: "
-						+ driver.getString("class"));
-				System.out.println("Driving condition: "
-						+ driver.getInt("r_id"));
-				System.out.println("Condition: "
-						+ driver.getInt("description"));
-				System.out.println("Licence expiring date: "
-						+ driver.getDate("expiring_date"));
-				System.out.println("\n");
+			if (driver.next()){
+				do {
+					System.out.println("\nName: " + driver.getString("name"));
+					System.out.println("Licence # : "
+							+ driver.getString("licence_no"));
+					System.out.println("Address: " + driver.getString("addr"));
+					System.out.println("Birthday: " + driver.getDate("birthday"));
+					System.out.println("Driving class: "
+							+ driver.getString("class"));
+					System.out.println("Driving condition: "
+							+ driver.getInt("r_id"));
+					System.out.println("Condition Description: "
+							+ driver.getInt("description"));
+					System.out.println("Licence expiring date: "
+							+ driver.getDate("expiring_date"));
+					System.out.println("\n");
+				} while(driver.next());
+			} else {
+				System.out.println("Person does not have licence");
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -173,23 +177,27 @@ public class Search {
 			violation = searchDatabase(dbConn, queryTicketsByLNo, licence);
 		}
 		try {
-			while (violation.next()) {
-				System.out.println("\nTicket #: "
-						+ violation.getString("ticket_no"));
-				System.out.println("Violator: "
-						+ violation.getString("violator_no"));
-				System.out.println("Vehicle: "
-						+ violation.getString("vehicle_id"));
-				System.out.println("Officer: "
-						+ violation.getString("office_no"));
-				System.out.println("Violation type: "
-						+ violation.getInt("vtype"));
-				System.out.println("Violation date: "
-						+ violation.getTimestamp("vdate"));
-				System.out.println("Location: " + violation.getString("place"));
-				System.out.println("Comments: "
-						+ violation.getString("descriptions"));
-				System.out.println("\n");
+			if (violation.next()){
+				do {
+					System.out.println("\nTicket #: "
+							+ violation.getString("ticket_no"));
+					System.out.println("Violator: "
+							+ violation.getString("violator_no"));
+					System.out.println("Vehicle: "
+							+ violation.getString("vehicle_id"));
+					System.out.println("Officer: "
+							+ violation.getString("office_no"));
+					System.out.println("Violation type: "
+							+ violation.getInt("vtype"));
+					System.out.println("Violation date: "
+							+ violation.getTimestamp("vdate"));
+					System.out.println("Location: " + violation.getString("place"));
+					System.out.println("Comments: "
+							+ violation.getString("descriptions"));
+					System.out.println("\n");
+				} while(violation.next());
+			} else {
+				System.out.println("Person does not have any violations");
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -221,12 +229,16 @@ public class Search {
 			searchHistory.setString(1, serialNum);
 			searchHistory.setString(2, serialNum);
 			history = searchHistory.executeQuery();
-			while (history.next()) {
-				System.out.println("\nSerial #: " + history.getString("v.serial_no"));
-				System.out.println("Transactions: " + history.getInt("transCount"));
-				System.out.println("Average price: " + history.getInt("avgPrice"));
-				System.out.println("Tickets: " + history.getInt("ticCount"));
-				System.out.println("\n");
+			if (history.next()){
+				do {
+					System.out.println("\nSerial #: " + history.getString("v.serial_no"));
+					System.out.println("Transactions: " + history.getInt("transCount"));
+					System.out.println("Average price: " + history.getInt("avgPrice"));
+					System.out.println("Tickets: " + history.getInt("ticCount"));
+					System.out.println("\n");
+				} while(history.next());
+			} else {
+				System.out.println("Vehicle does not have any history");
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
