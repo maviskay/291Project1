@@ -41,8 +41,18 @@ public class database {
 			System.out.println("Connection to Oracle failed");
 			return;
 		}
-		if (conn != null)
-			requestAction();
+		if (conn != null){
+			String caseInsensitive = "ALTER SESSION SET NLS_COMP=LINGUISTIC";
+			String caseInsensitive2 = "ALTER SESSION SET NLS_SORT=BINARY_CI";
+			try {
+				Statement statement = conn.createStatement();
+				statement.executeQuery(caseInsensitive);
+				statement.executeQuery(caseInsensitive2);
+				requestAction();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// Requests selection from user & ensures valid request
