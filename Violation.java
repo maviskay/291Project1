@@ -40,7 +40,7 @@ public class Violation {
 		}
 		
 		// Check who the ticket should be issued to
-		System.out.print("Was the driver identified? ");
+		System.out.print("Was the driver identified (y or n)? ");
 		driver = database.requestYorN();
 		
 		// Obtain violator id
