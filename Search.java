@@ -111,13 +111,11 @@ public class Search {
 			if (driver.next()){
 				do {
 					System.out.println("\nName: " + driver.getString("name"));
-					if (driver.getString("licence_no") != null){
-						System.out.println("Licence # : "
-								+ driver.getString("licence_no"));
-					}
 					System.out.println("Address: " + driver.getString("addr"));
 					System.out.println("Birthday: " + driver.getDate("birthday"));
 					if (driver.getString("licence_no") != null){
+						System.out.println("Licence # : "
+								+ driver.getString("licence_no"));
 						System.out.println("Driving class: "
 								+ driver.getString("class"));
 						System.out.println("Licence expiring date: "
@@ -226,14 +224,14 @@ public class Search {
 				break;
 			}
 		}
-		String queryVehicleHist = "SELECT v.serial_no, COUNT(DISTINCT s.transaction_id), AVG(s.price), COUNT(DISTINCT t.ticket_no) FROM vehicle v, auto_sale s, ticket t WHERE s.vehicle_id (+)= 'v." + serialNum + "' AND t.vehicle_id (+)= 'v." + serialNum + "' GROUP BY v.serial_no";
+		String queryVehicleHist = "SELECT v.serial_no, COUNT(DISTINCT s.transaction_id) AS transCount, AVG(s.price) AS avgPrice, COUNT(DISTINCT t.ticket_no) AS ticCount FROM vehicle v, auto_sale s, ticket t WHERE s.vehicle_id (+)= v.serial_no AND t.vehicle_id (+)= v.serial_no AND v.serial_no = '" + serialNum + "' GROUP BY v.serial_no";
 		
 		try {
 			searchHistory = dbConn.createStatement();
 			history = searchHistory.executeQuery(queryVehicleHist);
 			if (history.next()){
 				do {
-					System.out.println("\nSerial #: " + history.getString("v.serial_no"));
+					System.out.println("\nSerial #: " + history.getString("serial_no"));
 					System.out.println("Transactions: " + history.getInt("transCount"));
 					System.out.println("Average price: " + history.getInt("avgPrice"));
 					System.out.println("Tickets: " + history.getInt("ticCount"));
