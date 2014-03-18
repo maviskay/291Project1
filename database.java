@@ -7,7 +7,6 @@ import java.io.Console;
 
 // export CLASSPATH=$CLASSPATH\:.\:/oracle/jdbc/lib/classes12.zip
 // TODO: make sure casing of string doesn't matter
-// TODO: make sure drive licence photo works
 
 public class database {
 	static Connection conn = null;
@@ -128,7 +127,7 @@ public class database {
 
 		while (true) {
 			keyboard = new Scanner(System.in);
-			input = keyboard.nextLine();
+			input = keyboard.nextLine().toLowerCase();
 			if (input.length() > maxLength) {
 				System.out.print("Input invalid, please try again: ");
 			} else if (nonNum == 1 && input.matches(".*\\d+.*")) {
