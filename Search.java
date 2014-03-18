@@ -189,7 +189,7 @@ public class Search {
 					System.out.println("Violation type: "
 							+ violation.getString("vtype"));
 					System.out.println("Violation date: "
-							+ violation.getTimestamp("vdate"));
+							+ violation.getDate("vdate"));
 					System.out.println("Location: " + violation.getString("place"));
 					System.out.println("Comments: "
 							+ violation.getString("descriptions"));
